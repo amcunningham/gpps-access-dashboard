@@ -1005,22 +1005,6 @@ function renderAllCharts() {
                 tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}%` } },
                 annotation: {
                     annotations: {
-                        threshold: {
-                            type: 'line',
-                            yMin: 85, yMax: 85,
-                            borderColor: COLORS.green,
-                            borderWidth: 1.5,
-                            borderDash: [6, 4],
-                            label: {
-                                display: true,
-                                content: '85% — typical "high satisfaction" benchmark',
-                                position: 'end',
-                                backgroundColor: COLORS.green,
-                                color: '#fff',
-                                font: { size: 9 },
-                                padding: { x: 4, y: 2 }
-                            }
-                        },
                         challengeFund: {
                             type: 'line',
                             xMin: 5.5, xMax: 5.5,
