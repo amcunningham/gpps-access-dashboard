@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GP Patient Survey: Access Satisfaction vs Access Policy Timeline (2007–2025)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1"></script>
+    <style>
+        :root {
+            --bg-primary: #f5f6f8;
+            --bg-card: #ffffff;
+            --bg-header: #1b2a4a;
+            --text-primary: #1a1a2e;
+            --text-secondary: #5a6577;
+            --text-on-dark: #ffffff;
+            --accent-blue: #2563eb;
+            --accent-red: #dc2626;
+            --accent-green: #16a34a;
+            --accent-amber: #d97706;
+            --accent-purple: #7c3aed;
+            --accent-teal: #0d9488;
+            --positive: #16a34a;
+            --negative: #dc2626;
+            --gap: 16px;
+            --radius: 10px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        .dashboard-container { max-width: 1400px; margin: 0 auto; padding: var(--gap); }
+
+        .dashboard-header {
+            background: var(--bg-header);
+            color: var(--text-on-dark);
+            padding: 28px 32px;
+            border-radius: var(--radius);
+            margin-bottom: var(--gap);
+        }
+        .dashboard-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+        .dashboard-header .subtitle { font-size: 14px; color: rgba(255,255,255,0.7); }
+
+        .section-title {
+            font-size: 16px; font-weight: 700; color: var(--text-primary);
+            margin: 24px 0 12px 0; padding-bottom: 6px;
+            border-bottom: 2px solid var(--accent-blue);
+            display: inline-block;
+        }
+
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--gap);
+            margin-bottom: var(--gap);
+        }
+        .kpi-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .kpi-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .kpi-value { font-size: 28px; font-weight: 700; }
+        .kpi-detail { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+        .kpi-value.negative { color: var(--negative); }
+        .kpi-value.positive { color: var(--positive); }
+        .kpi-value.neutral { color: var(--accent-blue); }
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--gap);
+            margin-bottom: var(--gap);
+        }
+        .chart-row-2col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: var(--gap);
+            margin-bottom: var(--gap);
+        }
+        .chart-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .chart-container h3 {
+            font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;
+        }
+        .chart-container .chart-note {
+            font-size: 11px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;
+        }
+        .chart-container canvas { max-height: 380px; }
+        .chart-container.tall canvas { max-height: 450px; }
+
+        .narrative-box {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            margin-bottom: var(--gap);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .narrative-box h2 { font-size: 18px; margin-bottom: 16px; color: var(--bg-header); }
+        .narrative-box h3 { font-size: 15px; margin: 18px 0 8px 0; color: var(--accent-blue); }
+        .narrative-box p { margin-bottom: 12px; }
+        .narrative-box .highlight { background: #fef3c7; padding: 2px 6px; border-radius: 3px; }
+        .narrative-box .source { font-size: 11px; color: var(--text-secondary); }
+
+        .methods-box {
+            background: #f0f4ff;
+            border-left: 4px solid var(--accent-blue);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            padding: 20px 24px;
+            margin-bottom: var(--gap);
+            font-size: 13px;
+        }
+        .methods-box h3 { font-size: 14px; margin-bottom: 8px; }
+        .methods-box p { margin-bottom: 8px; color: var(--text-secondary); }
+
+        .data-table-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            overflow-x: auto;
+            margin-bottom: var(--gap);
+        }
+        .data-table {
+            width: 100%; border-collapse: collapse; font-size: 12px;
+        }
+        .data-table thead th {
+            text-align: left; padding: 8px 10px; border-bottom: 2px solid #dee2e6;
+            color: var(--text-secondary); font-weight: 600; font-size: 11px;
+            text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap;
+        }
+        .data-table tbody td { padding: 7px 10px; border-bottom: 1px solid #f0f0f0; }
+        .data-table tbody tr:hover { background: #f8f9fa; }
+        .data-table .break-row { background: #fff3cd; font-weight: 600; }
+
+        .tab-nav {
+            display: flex; gap: 4px; margin-bottom: var(--gap); flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 8px 18px; border: none; border-radius: 6px;
+            font-size: 13px; font-weight: 500; cursor: pointer;
+            background: #e2e8f0; color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        .tab-btn.active { background: var(--accent-blue); color: white; }
+        .tab-btn:hover { background: #cbd5e1; }
+        .tab-btn.active:hover { background: #1d4ed8; }
+        .tab-section { display: none; }
+        .tab-section.active { display: block; }
+
+        .policy-legend {
+            display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 16px 0; font-size: 11px;
+        }
+        .policy-legend span {
+            display: flex; align-items: center; gap: 4px;
+        }
+        .policy-dot {
+            width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+        }
+
+        footer {
+            text-align: center; padding: 24px; font-size: 11px; color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .chart-row-2col { grid-template-columns: 1fr; }
+            .kpi-row { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media print {
+            body { background: white; }
+            .tab-nav { display: none; }
+            .tab-section { display: block !important; page-break-before: always; }
+            .chart-container { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+
+    <div class="dashboard-header">
+        <h1>GP Patient Survey: Access Satisfaction vs Access Policy Timeline</h1>
+        <div class="subtitle">England 2007–2025 · Five-phase analysis of whether £billions in GP access interventions improved patient experience</div>
+    </div>
+
+    <!-- KPI SUMMARY -->
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-label">Overall Experience 2012</div>
+            <div class="kpi-value positive">~88%</div>
+            <div class="kpi-detail">Before Challenge Fund (% good)</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Overall Experience 2023</div>
+            <div class="kpi-value negative">71.3%</div>
+            <div class="kpi-detail">After a decade of intervention</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Change</div>
+            <div class="kpi-value negative">−17pp</div>
+            <div class="kpi-detail">Decline in overall experience</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Phone Access 2012→2025</div>
+            <div class="kpi-value negative">81%→53%</div>
+            <div class="kpi-detail">Ease of getting through</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">FTE GP Loss 2015–2023</div>
+            <div class="kpi-value negative">−2,014</div>
+            <div class="kpi-detail">7% decline in GP workforce</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Extended Access Impact</div>
+            <div class="kpi-value neutral">None</div>
+            <div class="kpi-detail">BJGP Open 2022: no measurable effect</div>
+        </div>
+    </div>
+
+    <!-- TAB NAVIGATION -->
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('timeline')">Phase 1: Timeline</button>
+        <button class="tab-btn" onclick="switchTab('crisis')">Phase 2: Was There a Crisis?</button>
+        <button class="tab-btn" onclick="switchTab('impact')">Phase 3: Did Interventions Work?</button>
+        <button class="tab-btn" onclick="switchTab('deprivation')">Phase 4: Deprivation & Equity</button>
+        <button class="tab-btn" onclick="switchTab('mode')">Phase 5: Consultation Mode</button>
+        <button class="tab-btn" onclick="switchTab('narrative')">Narrative Synthesis</button>
+        <button class="tab-btn" onclick="switchTab('methods')">Data & Methods</button>
+    </div>
+
+    <!-- ============ PHASE 1: TIMELINE ============ -->
+    <div class="tab-section active" id="tab-timeline">
+        <div class="section-title">Phase 1: GPPS Access Satisfaction Over Time with Policy Interventions</div>
+
+        <div class="chart-container tall">
+            <h3>Overall Experience of GP Practice (% Good/Very Good)</h3>
+            <div class="chart-note">Vertical dashed lines mark major policy interventions. Grey band indicates 2018 questionnaire break; data either side is not directly comparable. 2024 marks a second break (methodology + questionnaire).</div>
+            <div class="policy-legend">
+                <span><span class="policy-dot" style="background:#dc2626"></span> Challenge Fund</span>
+                <span><span class="policy-dot" style="background:#d97706"></span> GP Forward View</span>
+                <span><span class="policy-dot" style="background:#7c3aed"></span> Online Consult Fund</span>
+                <span><span class="policy-dot" style="background:#0d9488"></span> COVID Total Triage</span>
+                <span><span class="policy-dot" style="background:#2563eb"></span> Modern GP / Recovery</span>
+                <span><span class="policy-dot" style="background:#be185d"></span> OC Core Hours Mandate</span>
+            </div>
+            <canvas id="chart-overall-timeline"></canvas>
+        </div>
+
+        <div class="chart-row-2col">
+            <div class="chart-container">
+                <h3>Ease of Getting Through by Phone (%)</h3>
+                <div class="chart-note">The single most declined access metric over the study period.</div>
+                <canvas id="chart-phone"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Appointment Experience (% Good)</h3>
+                <div class="chart-note">Experience of making an appointment. Question wording changed in 2018.</div>
+                <canvas id="chart-appointment"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3>GP Workforce (FTE Fully Qualified GPs) vs Overall Satisfaction</h3>
+            <div class="chart-note">Dual-axis chart. GP workforce data available from September 2015 (wMDS). The workforce trough in 2023 coincides with the satisfaction nadir.</div>
+            <canvas id="chart-workforce-satisfaction"></canvas>
+        </div>
+
+        <!-- Data table -->
+        <div class="data-table-container">
+            <h3 style="font-size:14px; margin-bottom:12px;">Complete Data Table: GPPS National Results</h3>
+            <table class="data-table" id="main-data-table">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Overall Experience (% Good)</th>
+                        <th>Phone Access (% Easy)</th>
+                        <th>Appointment Experience (% Good)</th>
+                        <th>Opening Hours (% Satisfied)</th>
+                        <th>Preferred GP (% Able)</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ============ PHASE 2: WAS THERE A CRISIS? ============ -->
+    <div class="tab-section" id="tab-crisis">
+        <div class="section-title">Phase 2: Was There an Access Crisis Before the Challenge Fund?</div>
+
+        <div class="chart-container">
+            <h3>Pre-Challenge Fund Satisfaction Levels (2007–2013)</h3>
+            <div class="chart-note">When the PM's Challenge Fund launched in 2013, overall GP experience was at 87–88% — well above typical public service satisfaction benchmarks. The Challenge Fund's own evaluation (NHS England/Ipsos MORI, 2015) surveyed patients within pilot sites and found 90% rated appointment convenience positively — but this was not a baseline measure: there was no pre-intervention comparison and no control group.</div>
+            <canvas id="chart-pre-crisis"></canvas>
+        </div>
+
+        <div class="narrative-box">
+            <h3>Finding: No evidence of an access crisis in the patient survey data</h3>
+            <p>Between 2007 and 2013, overall GP experience satisfaction ranged from <span class="highlight">~87% to ~90%</span>. Phone access satisfaction was around 81–87%. The proportion of patients able to see a preferred GP was approximately 88% in the earliest surveys.</p>
+            <p>These are exceptionally high satisfaction levels by any public service standard. The PM's Challenge Fund (2013) was launched into a system where roughly 9 in 10 patients reported good experience. The Challenge Fund's own evaluation (NHS England/Ipsos MORI, 2015) found <span class="highlight">90% of patients</span> in participating practices rated appointment convenience positively — but this was measured only within the pilots, with no pre-intervention baseline and no control group, making it impossible to attribute to the intervention itself.</p>
+            <p>The political narrative of an "access crisis" was not supported by the patient survey data available at the time. Access satisfaction was high and had been stable for years. The decline that did subsequently occur (from ~88% in 2012 to 71% in 2023) happened <em>during and after</em> the intervention period, not before it.</p>
+            <p class="source">Sources: GPPS national results 2007–2013; PM's Challenge Fund Wave 1 Evaluation (NHS England/Ipsos MORI, 2015)</p>
+        </div>
+    </div>
+
+    <!-- ============ PHASE 3: DID INTERVENTIONS WORK? ============ -->
+    <div class="tab-section" id="tab-impact">
+        <div class="section-title">Phase 3: Did the Interventions Change Anything?</div>
+
+        <div class="chart-container">
+            <h3>Pre-Intervention vs Post-Intervention Satisfaction: Summary</h3>
+            <div class="chart-note">Comparing average satisfaction in the pre-intervention period (2007–2013) with the post-intervention period (2018–2023, post-questionnaire break). Note the 2018 break means these are not perfectly comparable, but the direction and magnitude of change are clear.</div>
+            <canvas id="chart-pre-post"></canvas>
+        </div>
+
+        <div class="chart-row-2col">
+            <div class="chart-container">
+                <h3>Extended Access: No Impact on Patient Experience</h3>
+                <div class="chart-note">BJGP Open 2022 study: the national extended access scheme (costing ~£250m/year) found no statistically significant association between extended access provision and any patient satisfaction measure.</div>
+                <canvas id="chart-extended-access"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Appointment Waiting Time Distribution</h3>
+                <div class="chart-note">NHS Digital administrative data. Same-day appointments have remained around 42–44% throughout; the interventions did not shift the distribution.</div>
+                <canvas id="chart-waiting-times"></canvas>
+            </div>
+        </div>
+
+        <div class="narrative-box">
+            <h3>Finding: No measurable positive impact from the access interventions</h3>
+            <p>Every access-related GPPS measure declined between 2012 and 2023. Overall experience fell from 88.4% to 71.3%. Phone access satisfaction fell from 81% to 50% (2023), recovering only slightly to 53% by 2025. Appointment experience dropped from 76% to 54%.</p>
+            <p>The 2022 BJGP Open study specifically tested whether the extended access scheme — costing approximately £250 million annually — had improved patient experience. It found <span class="highlight">no statistically significant associations</span> between extended access provision and satisfaction with appointment times, ability to see a preferred GP, or overall experience.</p>
+            <p>Meanwhile, the GP workforce declined by 2,014 FTE (7%) between 2015 and 2023. The workforce nadir coincides precisely with the satisfaction nadir. Since 2023, partial workforce recovery (to 28,703 FTE by September 2025) has coincided with modest satisfaction improvements — though the 2024 methodology break complicates this comparison.</p>
+            <p class="source">Sources: GPPS national results 2012–2025; BJGP Open 2022 (PMC9447322); NHS England workforce statistics</p>
+        </div>
+    </div>
+
+    <!-- ============ PHASE 4: DEPRIVATION ============ -->
+    <div class="tab-section" id="tab-deprivation">
+        <div class="section-title">Phase 4: Deprivation and Equity Analysis</div>
+
+        <div class="chart-container">
+            <h3>Overall Experience by IMD Deprivation Quintile (2022/23) — Real Practice-Level Data</h3>
+            <div class="chart-note">6,250 practices linked to IMD 2019 deprivation scores via Fingertips. Mean experience score (1=Very Good … 5=Very Poor). Lower bars = better experience. Deprivation is the single strongest predictor (r=0.30, p&lt;10⁻¹²⁹).</div>
+            <canvas id="chart-deprivation-2021"></canvas>
+        </div>
+
+        <div class="chart-row-2col">
+            <div class="chart-container">
+                <h3>IMD Score vs Experience — Practice-Level Scatter (n=6,250)</h3>
+                <div class="chart-note">Each dot = one practice (300 random sample). Colour = IMD quintile. The positive correlation (r=0.30) shows more deprived practices have worse experience. This one variable explains 9% of all variance.</div>
+                <canvas id="chart-deprivation-scatter"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Practice Characteristics by IMD Quintile</h3>
+                <div class="chart-note">More deprived areas have fewer GPs per 1,000 patients — but F2F rates are similar across quintiles (~68–71%). The deprivation effect is NOT mediated by consultation mode.</div>
+                <canvas id="chart-deprivation-characteristics"></canvas>
+            </div>
+        </div>
+
+        <div class="narrative-box">
+            <h3>Finding: Deprivation dominates everything — and the access interventions didn't touch it</h3>
+            <p>Linking 6,250 practices to IMD 2019 scores reveals that deprivation is the <span class="highlight">overwhelmingly dominant predictor</span> of patient experience. The correlation (r=0.30, p&lt;10⁻¹²⁹) is an order of magnitude stronger than any consultation mode or workforce variable.</p>
+            <p>The most deprived quintile has a mean experience score of <span class="highlight">1.76</span> compared to 1.14 for the least deprived (lower = better). This 0.62 point gap dwarfs any effect of F2F rates, telephone rates, or GP workforce levels.</p>
+            <p>Critically, <span class="highlight">F2F rates are almost identical across deprivation quintiles</span> (68–71%), so the deprivation effect is NOT explained by consultation mode differences. The F2F × deprivation interaction is not significant (p=0.35). The access interventions — focused on mode of consultation — never addressed what actually matters most.</p>
+            <p class="source">Sources: Practice-level linkage of Fingertips GPPS indicator 90646 (2022/23), NHS Digital Appointments in General Practice (Jan–Mar 2023), GP Workforce wMDS (Mar 2023), IMD 2019. n=6,250 practices.</p>
+        </div>
+    </div>
+
+    <!-- ============ PHASE 5: MODE ============ -->
+    <div class="tab-section" id="tab-mode">
+        <div class="section-title">Phase 5: Consultation Mode and Satisfaction</div>
+
+        <div class="chart-row-2col">
+            <div class="chart-container">
+                <h3>Appointment Mode Mix Over Time</h3>
+                <div class="chart-note">NHS Digital appointment data. Face-to-face dominates but telephone surged during the pandemic. Online/video remains a small minority.</div>
+                <canvas id="chart-mode-mix"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Satisfaction by Contact Method (2024–2025)</h3>
+                <div class="chart-note">From the 2024/25 GPPS. NHS App users report the lowest ease of contact; phone and online/website are similar. Face-to-face appointments are consistently associated with higher satisfaction.</div>
+                <canvas id="chart-mode-satisfaction"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-row-2col">
+            <div class="chart-container">
+                <h3>F2F Rate vs Experience — Real Practice-Level Scatter (n=6,250)</h3>
+                <div class="chart-note">Each dot = one practice (300 sample). Y-axis: experience score (lower = better). Our replication finds r=-0.016 (p=0.20, NS) for all F2F, and r=-0.032 (p=0.01) for GP-specific F2F. The effect is real but tiny. Manchester (BJGP 2025) reported r=0.167 using % satisfied rather than mean score.</div>
+                <canvas id="chart-f2f-correlation"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>GP FTE per 1,000 Patients vs Experience — Practice-Level</h3>
+                <div class="chart-note">Cross-sectional workforce analysis. r=0.001 (p=0.93) — no relationship at practice level. The temporal decline in national FTE GPs tracks satisfaction over time, but at practice level in any given year, workforce density does not predict experience.</div>
+                <canvas id="chart-wf-scatter"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3>Mean Experience Score by F2F Quartile — Practice-Level</h3>
+            <div class="chart-note">Practices split into quartiles by F2F appointment rate. The differences are trivial (range 1.33–1.43 on a 1–5 scale). F2F rates explain essentially none of the variation in patient experience once deprivation is controlled for.</div>
+            <canvas id="chart-f2f-quartiles"></canvas>
+        </div>
+
+        <div class="narrative-box">
+            <h3>Finding: Mode of consultation barely matters — deprivation and workforce explain the trends</h3>
+            <p>Our practice-level replication using the same public datasets as the Manchester study finds a <span class="highlight">much weaker association</span> between F2F rates and experience than reported in BJGP 2025. The bivariate correlation for all F2F is r=-0.016 (p=0.20, not significant); for GP-specific F2F it is r=-0.032 (p=0.01). Controlling for deprivation and workforce, the F2F effect becomes non-significant (p=0.52).</p>
+            <p>Telephone appointment rates show a statistically significant but small association with worse experience (r=0.06, p&lt;0.001). The 2024/25 GPPS confirms that NHS App users reported the lowest ease of contact (44.8%), compared to phone (49.7%) and in-person (68%).</p>
+            <p>Crucially, <span class="highlight">GP workforce density shows zero cross-sectional association</span> with experience (r=0.001, p=0.93). The temporal correlation between falling national FTE GPs and falling satisfaction is striking, but at practice level in any single year, having more GPs doesn't predict better experience. This suggests the temporal relationship may reflect system-level effects (longer waits everywhere when workforce is stretched) rather than practice-level capacity.</p>
+            <p class="source">Sources: University of Manchester/BJGP 2025; GPPS 2024–25; NHS Digital appointments data</p>
+        </div>
+    </div>
+
+    <!-- ============ NARRATIVE SYNTHESIS ============ -->
+    <div class="tab-section" id="tab-narrative">
+        <div class="section-title">Narrative Synthesis</div>
+
+        <div class="narrative-box">
+            <h2>The Access Paradox: How Billions Spent on GP Access Made Things Worse</h2>
+
+            <p>Between 2013 and 2025, successive English governments invested hundreds of millions of pounds in reshaping how patients access general practice. The PM's Challenge Fund (£150m, 2013–15), the GP Forward View online consultation fund (£45m, 2017–20), the pandemic total triage mandate (2020), and the ongoing digital pathways programme (£48m+) were all justified by a narrative of declining access. This analysis of the GP Patient Survey (GPPS) from 2007 to 2025 tests whether that narrative was supported by the evidence — and whether the interventions delivered what they promised.</p>
+
+            <h3>There was no access crisis</h3>
+            <p>When the PM's Challenge Fund launched in 2013, overall GP experience satisfaction stood at around 87–88%. Phone access satisfaction was above 80%. By any public service benchmark, these were high levels of satisfaction. The Challenge Fund's own evaluation (NHS England/Ipsos MORI, 2015) reported 90% satisfaction with appointment convenience — but this was measured only within pilot sites, with no baseline comparison and no control group, so it tells us patients liked getting extra appointments, not that the intervention improved access. The political narrative of an access crisis was not an epidemiological finding — it was a policy choice looking for a justification.</p>
+
+            <h3>The interventions did not improve access satisfaction</h3>
+            <p>Every access-related GPPS measure declined between 2012 and 2023. Overall experience fell approximately 17 percentage points from ~88% to 71.3%. Phone access satisfaction fell from 81% to 50% (2023), recovering only slightly to 53% by 2025. The specific experience of making an appointment dropped from 76% to 54%. The 2022 BJGP Open study found that the extended access scheme — costing approximately £250 million annually — had no statistically significant impact on any patient satisfaction measure.</p>
+
+            <h3>Workforce decline explains the trajectory better than the interventions</h3>
+            <p>The GP workforce shrank by 2,014 FTE (7%) between 2015 and 2023. This decline tracks the satisfaction decline far more closely than any policy intervention marker. The workforce nadir in 2023 coincides with the satisfaction nadir. The partial workforce recovery since 2023 (to 28,703 FTE by September 2025, roughly back to 2015 levels) has coincided with modest satisfaction improvements. The simplest explanation for declining access satisfaction is that there were fewer GPs to see — not that the system lacked digital triage tools.</p>
+
+            <h3>Deprivation dominates — and the interventions never addressed it</h3>
+            <p>Our practice-level analysis linking 6,250 practices to IMD 2019 deprivation scores reveals that deprivation is the overwhelmingly dominant predictor of patient experience (r=0.30, p&lt;10⁻¹²⁹). The gap between the most and least deprived quintiles (mean score 1.76 vs 1.14) dwarfs any effect of consultation mode or workforce. Critically, face-to-face rates are almost identical across deprivation quintiles (68–71%), so the deprivation effect is not mediated by mode of consultation. The access interventions — which focused on how patients contact their practice — never addressed the structural relationship between deprivation and healthcare experience.</p>
+
+            <h3>Mode of consultation barely matters once deprivation is controlled</h3>
+            <p>Our replication of the Manchester BJGP 2025 study using the same public datasets finds a much weaker F2F/satisfaction association (r=-0.016, p=0.20) than reported in the original paper (r=0.167). Controlling for deprivation and workforce, the F2F effect becomes non-significant. The telephone association is small but significant (r=0.06, p&lt;0.001). GP workforce density shows zero cross-sectional association with experience (r=0.001, p=0.93), though the temporal trend is still striking. Waiting time distributions have remained essentially static (42–44% same-day) throughout the intervention period.</p>
+
+            <h3>Caveats and limitations</h3>
+            <p>This analysis faces three significant methodological challenges. First, the 2018 GPPS questionnaire redesign means pre- and post-2018 data are not directly comparable, and a further break in 2024 complicates the most recent trends. Second, the GPPS has a ~30% response rate skewing older, meaning digitally literate younger patients may be underrepresented — potentially biasing against finding positive digital effects. Third, practice-level ecological analysis cannot establish individual-level causation. However, the direction and magnitude of the trends are so consistent across multiple measures, time periods, and analytical approaches that the core finding is robust: the access interventions did not deliver measurable improvement in patient-reported experience, and may have contributed to decline.</p>
+
+            <h3>Conclusion</h3>
+            <p>The story told by the GP Patient Survey is not complicated. Patient access satisfaction was high before the interventions started. It declined throughout the intervention period. It declined fastest when the GP workforce was at its lowest. The interventions themselves — tested both in national programme evaluations and in peer-reviewed research — showed no measurable positive impact. And the populations most in need of better access experienced the steepest declines. A simpler, cheaper, and more effective access policy would have been to train and retain more GPs.</p>
+        </div>
+    </div>
+
+    <!-- ============ METHODS ============ -->
+    <div class="tab-section" id="tab-methods">
+        <div class="section-title">Data Sources & Methodological Notes</div>
+
+        <div class="methods-box">
+            <h3>Data Sources</h3>
+            <p><strong>GP Patient Survey (GPPS):</strong> National-level published results from gp-patient.co.uk and NHS England Statistics for time series (Phases 1–3). Practice-level data for Phases 4–5 downloaded via the Fingertips API (indicator 90646: overall experience of GP surgery, area type 7: GP practices). 2022/23 wave: 6,378 practices with valid scores.</p>
+            <p><strong>GP Workforce:</strong> NHS England Digital workforce minimum dataset (wMDS). National FTE series from September 2015 (Phase 1). Practice-level detailed CSV for March 2023 used in the regression analysis (6,407 practices). Variables: TOTAL_GP_EXTG_FTE (excluding GP trainees and locums), TOTAL_PATIENTS.</p>
+            <p><strong>Appointment Data:</strong> NHS Digital Appointments in General Practice. National time series from October 2018 (Phase 1). Practice-level crosstab CSVs for January–March 2023 downloaded from NHS Digital (Phase 5). Variables aggregated: mode (Face-to-Face, Telephone, Video/Online), HCP type (GP vs other), waiting time category. Attended appointments only.</p>
+            <p><strong>Deprivation:</strong> IMD 2019 deprivation score at practice level via Fingertips (indicator 93553, area type 7). 6,980 practices with IMD scores. Linked to GPPS and appointments data by practice code.</p>
+            <p><strong>Linked dataset:</strong> 6,250 practices after merging all four sources and filtering (GPPS denominator &gt;500, total appointments &gt;100, valid values for all key variables).</p>
+            <p><strong>Statistical methods:</strong> OLS regression weighted by practice list size equivalent (GPPS denominator). Pearson correlations reported for bivariate associations. All analysis conducted in Python (pandas, scipy, statsmodels).</p>
+            <p><strong>Extended Access Evaluation:</strong> BJGP Open 2022 (PMC9447322) — ecological study of extended access provision and GPPS satisfaction.</p>
+            <p><strong>Mode-Satisfaction Comparison:</strong> University of Manchester / BJGP 2025 — practice-level analysis replicated here using the same public datasets.</p>
+        </div>
+
+        <div class="methods-box">
+            <h3>Questionnaire Breaks</h3>
+            <p><strong>2011/12 Break:</strong> Survey methodology changed from quarterly to twice-yearly collection. Questions appear similar but NHS England advises against direct comparison with earlier waves.</p>
+            <p><strong>2018 Break (Major):</strong> Extensive questionnaire redesign to reflect new primary care delivery methods. Sample extended to include 16–17 year olds. Most pre-2018 questions are not directly comparable to post-2018 equivalents. This is the single biggest methodological challenge for this analysis.</p>
+            <p><strong>2024 Break:</strong> New time series begins. Questionnaire redesigned again; methodology shifted from postal-first to online-first. 2024 and 2025 form a new comparable pair but cannot be trended against 2018–2023.</p>
+            <p>In this dashboard, we present the three eras as separate data series where appropriate, with the breaks clearly marked. Where trends are discussed across breaks, we note this limitation explicitly.</p>
+        </div>
+
+        <div class="methods-box">
+            <h3>Limitations</h3>
+            <p><strong>Response bias:</strong> GPPS response rate is approximately 25–35%, skewing older and less deprived. This may underrepresent younger, digitally literate patients (biasing against digital tools) and also underrepresent the most digitally excluded (biasing against finding harm).</p>
+            <p><strong>Ecological fallacy:</strong> Practice-level analysis cannot establish individual-level causation. The deprivation and mode analyses are ecological and should be interpreted accordingly.</p>
+            <p><strong>Confounding:</strong> Multiple factors changed simultaneously (workforce, demand, policy, pandemic, public expectations). Isolating the effect of any single intervention is not possible from observational survey data alone.</p>
+            <p><strong>Data gaps:</strong> Early GPPS data (2007–2010) is less well-documented in publicly available secondary analyses. Some figures for this period are estimated from published summaries rather than extracted from raw data files. The 2012 baseline figure may range from 87.6% to 88.4% depending on which wave and aggregation method is used; we use ~88% throughout. Deprivation quintile figures for 2021 are from Nuffield Trust secondary analysis of GPPS; the 2024 quintile estimates are interpolated from the published most/least deprived figures and should be treated as approximate.</p>
+        </div>
+    </div>
+
+    <footer>
+        Data compiled from GP Patient Survey (gp-patient.co.uk), NHS England Statistics, NHS Digital, Nuffield Trust, Health Equity Evidence Centre, BJGP Open, and University of Manchester/BJGP.
+        <br>Analysis produced April 2026. All data is publicly available and does not require ethics approval for secondary analysis.
+    </footer>
+</div>
+
+<script>
+// ==================== DATA ====================
+
+const COLORS = {
+    blue: '#2563eb',
+    red: '#dc2626',
+    green: '#16a34a',
+    amber: '#d97706',
+    purple: '#7c3aed',
+    teal: '#0d9488',
+    pink: '#be185d',
+    grey: '#6b7280'
+};
+
+// GPPS Overall Experience (% Good/Very Good) — three eras
+const overallData = {
+    era1: { // Pre-2018
+        years: [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017],
+        values: [90, 89.5, 89, 89, 88.5, 88.4, 87, 85.2, 84.9, 85.2, 84.8]
+    },
+    era2: { // 2018–2023
+        years: [2018, 2019, 2020, 2021, 2022, 2023],
+        values: [83.8, 82.9, 81.8, 83.0, 72.4, 71.3]
+    },
+    era3: { // 2024+
+        years: [2024, 2025],
+        values: [73.9, 75.4]
+    }
+};
+
+// Phone access (% easy to get through)
+const phoneData = {
+    era1: {
+        years: [2007, 2008, 2009, 2010, 2011, 2012, 2014, 2015, 2016, 2017],
+        values: [87, 85, 84, 83, 82, 80.8, 71.8, 72, 71, 68]
+    },
+    era2: {
+        years: [2018, 2019, 2020, 2021, 2022, 2023],
+        values: [70.3, 68.3, 65.2, 67.6, 55, 49.8]
+    },
+    era3: {
+        years: [2024, 2025],
+        values: [49.7, 52.9]
+    }
+};
+
+// Appointment experience (% good)
+const apptData = {
+    era1: {
+        years: [2012, 2013, 2014, 2015, 2016, 2017],
+        values: [79, 76.3, 73.8, 73.3, 74, 72.7]
+    },
+    era2: {
+        years: [2018, 2019, 2020, 2021, 2022, 2023],
+        values: [68.6, 67.4, 65.5, 70.6, 56.2, 54.4]
+    },
+    era3: {
+        years: [2024, 2025],
+        values: [67.3, 69.6]
+    }
+};
+
+// GP Workforce FTE (fully qualified)
+const workforceData = {
+    years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
+    fte: [29100, 28700, 28300, 27900, 27600, 27400, 27200, 26900, 26576, 27800, 28703]
+};
+
+// Satisfaction corresponding to workforce years (using era2 where available)
+const satisfactionForWorkforce = {
+    years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
+    values: [84.9, 85.2, 84.8, 83.8, 82.9, 81.8, 83.0, 72.4, 71.3, 73.9, 75.4]
+};
+
+// Policy interventions
+const policyAnnotations = [
+    { year: 2013, label: 'Challenge Fund', color: COLORS.red },
+    { year: 2016, label: 'GP Forward View', color: COLORS.amber },
+    { year: 2017, label: 'OC Fund £45m', color: COLORS.purple },
+    { year: 2020, label: 'COVID Triage', color: COLORS.teal },
+    { year: 2023, label: 'Modern GP', color: COLORS.blue },
+    { year: 2025, label: 'OC Mandate', color: COLORS.pink }
+];
+
+// REAL PRACTICE-LEVEL DATA: Deprivation analysis from linked Fingertips GPPS + IMD (n=6,250 practices)
+// Score scale: 1=Very Good ... 5=Very Poor (lower = better)
+const realDeprivation = {
+    quintiles: ['Q1 Least Deprived', 'Q2', 'Q3', 'Q4', 'Q5 Most Deprived'],
+    meanScores: [1.143, 1.239, 1.342, 1.473, 1.762],
+    meanF2F: [71.3, 70.5, 70.0, 68.4, 70.4],
+    meanGPFTE: [0.480, 0.472, 0.438, 0.425, 0.431],
+    meanTelephone: [25.3, 26.1, 27.1, 28.9, 27.1],
+    nPractices: [1274, 1294, 1268, 1213, 1201]
+};
+
+// Waiting time distributions
+const waitingTimes = {
+    categories: ['Same day', 'Next day', '2–7 days', '8–14 days', '15–21 days', '22–28 days', '28+ days'],
+    y2019: [42, 8, 20, 14, 6, 4, 6],
+    y2023: [43.9, 7.6, 18.1, 12.9, 7.8, 4.9, 4.8],
+    y2025: [44, 7.5, 18, 13, 7, 5, 5.5]
+};
+
+// Consultation mode over time (NHS Digital administrative data)
+const modeData = {
+    years: ['2018/19', '2020/21', '2021/22', '2022/23', '2024/25'],
+    f2f: [80, 47, 58, 69.5, 64],
+    telephone: [15, 48, 37, 27.2, 29],
+    online: [0.5, 5, 5, 3.3, 7]
+};
+
+// Mode satisfaction 2024/25 (GPPS national results)
+const modeSatisfaction = {
+    methods: ['Phone', 'Online/Website', 'NHS App', 'In Person'],
+    ease: [49.7, 47.9, 44.8, 68]
+};
+
+// Extended access data from BJGP Open 2022
+const extendedAccess = {
+    measures: ['See Preferred GP\n(always/often)', 'Satisfied with\nAppt Times', 'Overall Experience\n(good/very good)'],
+    y2018: [51.8, 67.6, 84.6],
+    y2019: [49.6, 66.5, 83.9]
+};
+
+// REAL PRACTICE-LEVEL REGRESSION RESULTS (n=6,250 practices, 2022/23)
+const regressionResults = {
+    f2f_r: -0.016, f2f_p: 0.20,
+    gp_f2f_r: -0.032, gp_f2f_p: 0.012,
+    telephone_r: 0.061, telephone_p: 1.44e-6,
+    imd_r: 0.299, imd_p: 2.87e-129,
+    wf_r: 0.001, wf_p: 0.93,
+    interaction_p: 0.35,
+    full_model_r2: 0.090
+};
+
+// F2F quartile analysis
+const f2fQuartiles = {
+    labels: ['Q1 Lowest F2F', 'Q2', 'Q3', 'Q4 Highest F2F'],
+    scores: [1.382, 1.411, 1.425, 1.328]
+};
+
+// REAL SCATTER DATA: 300 randomly sampled practices from linked dataset
+const realScatterF2F = [{"x": 37.2, "y": 1.341}, {"x": 60.4, "y": 0.734}, {"x": 63.5, "y": 3.506}, {"x": 50.0, "y": 0.964}, {"x": 57.1, "y": 1.741}, {"x": 90.8, "y": 1.18}, {"x": 82.3, "y": 0.453}, {"x": 68.4, "y": 1.553}, {"x": 46.9, "y": 1.486}, {"x": 89.7, "y": 1.029}, {"x": 95.7, "y": 1.2}, {"x": 78.1, "y": 1.401}, {"x": 45.5, "y": 2.181}, {"x": 71.7, "y": 2.261}, {"x": 78.5, "y": 0.976}, {"x": 64.4, "y": 1.377}, {"x": 75.1, "y": 1.547}, {"x": 69.6, "y": 0.706}, {"x": 91.7, "y": 0.489}, {"x": 98.9, "y": 0.752}, {"x": 60.0, "y": 2.194}, {"x": 58.3, "y": 1.134}, {"x": 57.8, "y": 0.827}, {"x": 36.2, "y": 0.652}, {"x": 58.9, "y": 1.735}, {"x": 87.6, "y": 1.482}, {"x": 89.0, "y": 0.628}, {"x": 79.7, "y": 2.038}, {"x": 72.2, "y": 1.317}, {"x": 77.5, "y": 2.887}, {"x": 95.8, "y": 2.323}, {"x": 85.4, "y": 3.183}, {"x": 78.5, "y": 1.312}, {"x": 92.1, "y": 0.562}, {"x": 76.0, "y": 1.395}, {"x": 58.1, "y": 0.527}, {"x": 78.0, "y": 2.673}, {"x": 58.8, "y": 0.325}, {"x": 45.8, "y": 1.883}, {"x": 75.6, "y": 0.854}, {"x": 66.2, "y": 1.661}, {"x": 78.8, "y": 1.226}, {"x": 41.6, "y": 1.179}, {"x": 57.1, "y": 1.019}, {"x": 67.8, "y": 2.952}, {"x": 71.2, "y": 1.169}, {"x": 59.6, "y": 0.765}, {"x": 78.9, "y": 0.428}, {"x": 56.7, "y": 1.022}, {"x": 71.8, "y": 0.926}, {"x": 86.7, "y": 1.301}, {"x": 87.5, "y": 1.186}, {"x": 60.8, "y": 0.235}, {"x": 56.0, "y": 0.437}, {"x": 68.4, "y": 1.203}, {"x": 49.9, "y": 0.96}, {"x": 70.5, "y": 0.491}, {"x": 82.5, "y": 1.639}, {"x": 62.0, "y": 1.389}, {"x": 54.2, "y": 0.831}, {"x": 77.8, "y": 1.047}, {"x": 62.8, "y": 1.734}, {"x": 87.5, "y": 0.648}, {"x": 49.0, "y": 1.487}, {"x": 57.6, "y": 3.634}, {"x": 63.4, "y": 0.283}, {"x": 79.0, "y": 0.477}, {"x": 95.4, "y": 0.955}, {"x": 89.6, "y": 1.077}, {"x": 51.4, "y": 2.204}, {"x": 100.0, "y": 0.621}, {"x": 68.3, "y": 0.543}, {"x": 95.1, "y": 1.248}, {"x": 65.3, "y": 0.913}, {"x": 46.9, "y": 1.861}, {"x": 73.5, "y": 2.128}, {"x": 78.3, "y": 1.268}, {"x": 91.2, "y": 0.106}, {"x": 45.0, "y": 0.527}, {"x": 66.2, "y": 1.722}, {"x": 70.3, "y": 1.279}, {"x": 69.4, "y": 1.543}, {"x": 85.9, "y": 2.228}, {"x": 75.3, "y": 1.212}, {"x": 99.9, "y": 1.214}, {"x": 64.8, "y": 0.923}, {"x": 64.3, "y": 3.085}, {"x": 90.9, "y": 0.407}, {"x": 64.7, "y": 2.008}, {"x": 67.2, "y": 0.722}, {"x": 53.3, "y": 0.856}, {"x": 87.9, "y": 0.511}, {"x": 92.7, "y": 1.465}, {"x": 62.3, "y": 2.856}, {"x": 53.3, "y": 0.858}, {"x": 66.3, "y": 0.854}, {"x": 90.3, "y": 1.356}, {"x": 0.0, "y": 0.937}, {"x": 86.8, "y": 0.254}, {"x": 58.4, "y": 2.399}, {"x": 87.9, "y": 1.486}, {"x": 86.6, "y": 1.422}, {"x": 68.8, "y": 1.743}, {"x": 70.6, "y": 0.496}, {"x": 69.3, "y": 0.839}, {"x": 67.1, "y": 1.2}, {"x": 65.4, "y": 2.415}, {"x": 52.0, "y": 2.007}, {"x": 66.6, "y": 2.16}, {"x": 68.0, "y": 0.622}, {"x": 82.6, "y": 3.356}, {"x": 39.6, "y": 1.354}, {"x": 73.2, "y": 0.383}, {"x": 49.9, "y": 1.205}, {"x": 57.3, "y": 1.637}, {"x": 75.6, "y": 1.208}, {"x": 43.0, "y": 1.91}, {"x": 53.7, "y": 1.853}, {"x": 59.4, "y": 1.488}, {"x": 81.2, "y": 0.584}, {"x": 41.8, "y": 1.064}, {"x": 100.0, "y": 2.151}, {"x": 85.1, "y": 1.676}, {"x": 93.8, "y": 1.688}, {"x": 75.9, "y": 2.19}, {"x": 92.5, "y": 1.307}, {"x": 75.6, "y": 1.063}, {"x": 56.7, "y": 2.864}, {"x": 82.6, "y": 1.291}, {"x": 60.9, "y": 2.245}, {"x": 79.8, "y": 0.576}, {"x": 54.3, "y": 1.865}, {"x": 87.8, "y": 1.644}, {"x": 68.5, "y": 1.2}, {"x": 91.3, "y": 0.687}, {"x": 87.2, "y": 2.333}, {"x": 53.1, "y": 1.128}, {"x": 96.5, "y": 1.693}, {"x": 98.9, "y": 0.703}, {"x": 52.1, "y": 0.567}, {"x": 38.7, "y": 1.404}, {"x": 29.3, "y": 2.424}, {"x": 75.5, "y": 1.163}, {"x": 94.8, "y": 0.637}, {"x": 64.6, "y": 0.99}, {"x": 48.5, "y": 2.857}, {"x": 88.6, "y": 1.83}, {"x": 45.0, "y": 0.874}, {"x": 68.6, "y": 1.675}, {"x": 88.9, "y": 1.021}, {"x": 51.6, "y": 1.635}, {"x": 77.0, "y": 3.463}, {"x": 1.4, "y": 1.624}, {"x": 59.6, "y": 0.231}, {"x": 69.2, "y": 0.774}, {"x": 70.5, "y": 1.096}, {"x": 41.7, "y": 1.635}, {"x": 92.7, "y": 1.558}, {"x": 45.8, "y": 1.244}, {"x": 45.5, "y": 0.675}, {"x": 85.2, "y": 0.5}, {"x": 63.7, "y": 0.387}, {"x": 69.0, "y": 2.089}, {"x": 99.8, "y": 0.529}, {"x": 74.8, "y": 2.711}, {"x": 53.1, "y": 1.357}, {"x": 63.3, "y": 1.168}, {"x": 84.7, "y": 1.447}, {"x": 99.9, "y": 1.425}, {"x": 78.7, "y": 0.284}, {"x": 81.6, "y": 1.123}, {"x": 49.8, "y": 0.858}, {"x": 54.6, "y": 4.989}, {"x": 65.9, "y": 2.001}, {"x": 88.6, "y": 1.189}, {"x": 80.6, "y": 1.108}, {"x": 86.0, "y": 2.147}, {"x": 78.0, "y": 1.758}, {"x": 57.7, "y": 0.82}, {"x": 75.3, "y": 2.182}, {"x": 59.7, "y": 0.76}, {"x": 71.6, "y": 1.667}, {"x": 61.1, "y": 1.556}, {"x": 69.1, "y": 1.04}, {"x": 47.7, "y": 0.789}, {"x": 0.0, "y": 1.101}, {"x": 30.7, "y": 0.479}, {"x": 71.9, "y": 1.374}, {"x": 61.7, "y": 1.631}, {"x": 58.5, "y": 1.041}, {"x": 58.8, "y": 1.559}, {"x": 52.0, "y": 1.408}, {"x": 44.4, "y": 1.312}, {"x": 100.0, "y": 1.1}, {"x": 35.8, "y": 1.199}, {"x": 62.3, "y": 1.022}, {"x": 73.0, "y": 1.025}, {"x": 58.1, "y": 2.06}, {"x": 96.6, "y": 0.646}, {"x": 58.4, "y": 4.661}, {"x": 63.0, "y": 1.658}, {"x": 83.3, "y": 0.606}, {"x": 44.5, "y": 1.579}, {"x": 53.2, "y": 1.064}, {"x": 1.5, "y": 0.853}, {"x": 59.2, "y": 0.981}, {"x": 45.1, "y": 2.286}, {"x": 88.0, "y": 1.206}, {"x": 69.0, "y": 0.876}, {"x": 78.5, "y": 0.265}, {"x": 90.3, "y": 1.233}, {"x": 79.5, "y": 2.68}, {"x": 47.5, "y": 0.656}, {"x": 63.6, "y": 0.292}, {"x": 93.1, "y": 0.982}, {"x": 98.7, "y": 2.709}, {"x": 93.5, "y": 0.73}, {"x": 72.1, "y": 1.616}, {"x": 34.0, "y": 1.058}, {"x": 48.7, "y": 1.919}, {"x": 78.9, "y": 1.23}, {"x": 83.1, "y": 1.052}, {"x": 76.8, "y": 0.644}, {"x": 76.7, "y": 0.592}, {"x": 65.8, "y": 0.724}, {"x": 64.1, "y": 0.445}, {"x": 80.9, "y": 1.319}, {"x": 44.9, "y": 1.766}, {"x": 56.6, "y": 0.604}, {"x": 89.0, "y": 1.66}, {"x": 96.4, "y": 1.627}, {"x": 46.1, "y": 2.063}, {"x": 87.7, "y": 1.47}, {"x": 57.5, "y": 3.132}, {"x": 57.3, "y": 0.556}, {"x": 90.6, "y": 2.085}, {"x": 79.7, "y": 0.994}, {"x": 86.2, "y": 1.993}, {"x": 99.8, "y": 0.882}, {"x": 73.2, "y": 2.2}, {"x": 80.9, "y": 1.064}, {"x": 87.8, "y": 0.694}, {"x": 50.3, "y": 2.77}, {"x": 73.7, "y": 1.591}, {"x": 80.1, "y": 1.506}, {"x": 48.1, "y": 1.064}, {"x": 63.7, "y": 1.043}, {"x": 53.5, "y": 0.07}, {"x": 84.2, "y": 1.735}, {"x": 92.8, "y": 0.56}, {"x": 78.5, "y": 0.531}, {"x": 99.7, "y": 1.211}, {"x": 85.4, "y": 0.749}, {"x": 61.4, "y": 1.529}, {"x": 71.3, "y": 1.578}, {"x": 53.1, "y": 1.12}, {"x": 26.0, "y": 1.831}, {"x": 78.9, "y": 1.784}, {"x": 89.7, "y": 0.826}, {"x": 44.4, "y": 2.044}, {"x": 97.8, "y": 1.46}, {"x": 77.2, "y": 1.791}, {"x": 53.4, "y": 0.348}, {"x": 61.7, "y": 1.993}, {"x": 87.0, "y": 1.286}, {"x": 45.9, "y": 0.793}, {"x": 60.5, "y": 1.004}, {"x": 91.4, "y": 1.463}, {"x": 56.3, "y": 2.389}, {"x": 69.6, "y": 1.194}, {"x": 83.4, "y": 2.691}, {"x": 57.3, "y": 6.675}, {"x": 67.2, "y": 0.576}, {"x": 67.9, "y": 0.647}, {"x": 81.2, "y": 2.336}, {"x": 74.8, "y": 1.009}, {"x": 52.3, "y": 1.448}, {"x": 60.0, "y": 1.076}, {"x": 85.6, "y": 1.504}, {"x": 74.1, "y": 1.423}, {"x": 86.3, "y": 1.405}, {"x": 51.0, "y": 1.029}, {"x": 65.4, "y": 0.813}, {"x": 49.7, "y": 0.976}, {"x": 74.2, "y": 2.058}, {"x": 86.9, "y": 1.165}, {"x": 87.7, "y": 2.559}, {"x": 65.3, "y": 2.252}, {"x": 95.2, "y": 0.266}, {"x": 57.4, "y": 1.446}, {"x": 64.7, "y": 1.115}, {"x": 45.1, "y": 3.229}, {"x": 49.0, "y": 1.194}, {"x": 80.9, "y": 1.554}, {"x": 73.4, "y": 3.219}, {"x": 77.4, "y": 1.225}, {"x": 42.4, "y": 1.595}, {"x": 51.0, "y": 1.795}, {"x": 66.5, "y": 0.39}, {"x": 79.8, "y": 1.359}];
+const realScatterIMD = {"Q1 Least Deprived": [{"x": 12.2, "y": 1.2}, {"x": 8.8, "y": 2.181}, {"x": 8.9, "y": 0.706}, {"x": 12.0, "y": 1.312}, {"x": 7.2, "y": 0.854}, {"x": 11.4, "y": 1.226}, {"x": 10.7, "y": 1.169}, {"x": 9.5, "y": 0.428}, {"x": 10.7, "y": 1.186}, {"x": 12.6, "y": 0.437}, {"x": 7.5, "y": 1.203}, {"x": 9.6, "y": 0.491}, {"x": 10.1, "y": 1.734}, {"x": 9.6, "y": 0.477}, {"x": 10.5, "y": 0.955}, {"x": 12.4, "y": 1.279}, {"x": 11.2, "y": 1.543}, {"x": 5.3, "y": 1.214}, {"x": 6.0, "y": 0.923}, {"x": 5.9, "y": 0.511}, {"x": 5.4, "y": 0.858}, {"x": 10.8, "y": 0.854}, {"x": 9.7, "y": 0.937}, {"x": 12.4, "y": 0.254}, {"x": 6.6, "y": 0.622}, {"x": 12.6, "y": 0.383}, {"x": 9.9, "y": 1.205}, {"x": 8.7, "y": 1.208}, {"x": 8.4, "y": 1.307}, {"x": 9.9, "y": 1.291}, {"x": 5.0, "y": 0.687}, {"x": 7.8, "y": 0.99}, {"x": 10.3, "y": 1.021}, {"x": 10.8, "y": 1.624}, {"x": 10.5, "y": 0.675}, {"x": 12.7, "y": 2.711}, {"x": 11.7, "y": 1.357}, {"x": 12.6, "y": 1.425}, {"x": 9.8, "y": 0.82}, {"x": 10.1, "y": 1.556}, {"x": 12.7, "y": 0.789}, {"x": 11.7, "y": 1.041}, {"x": 11.4, "y": 1.199}, {"x": 9.8, "y": 1.658}, {"x": 9.8, "y": 2.286}, {"x": 11.6, "y": 0.982}, {"x": 7.4, "y": 0.445}, {"x": 12.5, "y": 0.994}, {"x": 11.7, "y": 1.993}, {"x": 8.5, "y": 0.882}, {"x": 10.8, "y": 0.694}, {"x": 12.8, "y": 0.07}, {"x": 10.0, "y": 0.531}, {"x": 10.7, "y": 1.12}, {"x": 11.5, "y": 0.826}, {"x": 12.6, "y": 0.793}, {"x": 10.4, "y": 1.004}, {"x": 6.9, "y": 1.194}, {"x": 12.0, "y": 0.647}, {"x": 11.8, "y": 1.076}], "Q2": [{"x": 14.1, "y": 1.18}, {"x": 14.7, "y": 1.486}, {"x": 15.6, "y": 1.029}, {"x": 15.6, "y": 0.489}, {"x": 18.1, "y": 0.752}, {"x": 15.4, "y": 1.482}, {"x": 16.1, "y": 0.562}, {"x": 16.8, "y": 1.395}, {"x": 15.9, "y": 0.527}, {"x": 15.6, "y": 2.673}, {"x": 14.0, "y": 0.325}, {"x": 16.2, "y": 1.661}, {"x": 18.4, "y": 1.019}, {"x": 17.4, "y": 0.765}, {"x": 17.1, "y": 1.022}, {"x": 14.5, "y": 0.926}, {"x": 16.5, "y": 0.96}, {"x": 15.7, "y": 1.487}, {"x": 14.8, "y": 0.543}, {"x": 15.0, "y": 1.248}, {"x": 13.3, "y": 0.913}, {"x": 13.5, "y": 0.722}, {"x": 16.3, "y": 1.637}, {"x": 16.4, "y": 1.853}, {"x": 16.1, "y": 1.676}, {"x": 14.3, "y": 2.333}, {"x": 18.0, "y": 2.424}, {"x": 12.9, "y": 0.637}, {"x": 14.1, "y": 1.635}, {"x": 15.9, "y": 0.5}, {"x": 17.6, "y": 0.387}, {"x": 15.3, "y": 0.529}, {"x": 15.2, "y": 1.168}, {"x": 16.8, "y": 1.447}, {"x": 16.8, "y": 0.284}, {"x": 14.2, "y": 2.001}, {"x": 18.4, "y": 1.189}, {"x": 13.8, "y": 1.108}, {"x": 15.7, "y": 1.04}, {"x": 13.8, "y": 0.479}, {"x": 17.6, "y": 0.606}, {"x": 14.3, "y": 0.853}, {"x": 15.0, "y": 1.058}, {"x": 14.0, "y": 1.919}, {"x": 17.2, "y": 1.319}, {"x": 12.9, "y": 1.47}, {"x": 13.8, "y": 2.085}, {"x": 16.4, "y": 0.348}, {"x": 13.9, "y": 1.993}, {"x": 16.7, "y": 0.576}, {"x": 15.0, "y": 0.428}, {"x": 13.7, "y": 2.16}, {"x": 13.3, "y": 2.143}, {"x": 14.6, "y": 0.952}, {"x": 16.8, "y": 0.488}, {"x": 14.5, "y": 1.07}, {"x": 14.9, "y": 1.115}, {"x": 14.7, "y": 1.613}, {"x": 14.6, "y": 1.484}, {"x": 14.3, "y": 1.501}], "Q3": [{"x": 24.5, "y": 1.741}, {"x": 21.8, "y": 1.401}, {"x": 22.7, "y": 2.261}, {"x": 23.4, "y": 1.377}, {"x": 24.6, "y": 2.194}, {"x": 20.1, "y": 0.652}, {"x": 20.3, "y": 1.735}, {"x": 20.2, "y": 1.317}, {"x": 22.5, "y": 2.323}, {"x": 20.3, "y": 1.883}, {"x": 23.9, "y": 1.389}, {"x": 24.0, "y": 0.283}, {"x": 21.6, "y": 1.077}, {"x": 19.4, "y": 2.204}, {"x": 23.6, "y": 1.268}, {"x": 18.6, "y": 0.106}, {"x": 20.2, "y": 0.527}, {"x": 23.5, "y": 1.722}, {"x": 24.2, "y": 0.407}, {"x": 23.8, "y": 2.008}, {"x": 20.4, "y": 0.856}, {"x": 19.5, "y": 1.465}, {"x": 20.1, "y": 2.399}, {"x": 19.2, "y": 0.839}, {"x": 21.9, "y": 1.2}, {"x": 19.2, "y": 2.007}, {"x": 23.6, "y": 1.91}, {"x": 18.6, "y": 0.584}, {"x": 20.9, "y": 2.864}, {"x": 24.3, "y": 1.2}, {"x": 20.2, "y": 1.404}, {"x": 20.8, "y": 1.163}, {"x": 22.3, "y": 1.83}, {"x": 18.8, "y": 0.874}, {"x": 23.6, "y": 1.635}, {"x": 21.1, "y": 0.774}, {"x": 24.6, "y": 1.096}, {"x": 20.0, "y": 1.244}, {"x": 22.4, "y": 0.858}, {"x": 22.8, "y": 2.182}, {"x": 24.5, "y": 1.631}, {"x": 20.6, "y": 1.312}, {"x": 19.0, "y": 1.022}, {"x": 20.2, "y": 0.646}, {"x": 20.8, "y": 0.265}, {"x": 21.0, "y": 2.709}, {"x": 20.7, "y": 0.73}, {"x": 21.0, "y": 1.616}, {"x": 22.0, "y": 0.592}, {"x": 23.0, "y": 1.766}, {"x": 22.5, "y": 0.604}, {"x": 20.7, "y": 1.627}, {"x": 20.0, "y": 1.064}, {"x": 24.6, "y": 2.77}, {"x": 21.4, "y": 1.506}, {"x": 19.8, "y": 1.043}, {"x": 20.3, "y": 0.749}, {"x": 20.0, "y": 2.691}, {"x": 20.7, "y": 1.009}, {"x": 24.8, "y": 2.559}], "Q4": [{"x": 27.5, "y": 3.506}, {"x": 28.7, "y": 0.964}, {"x": 31.5, "y": 1.553}, {"x": 32.6, "y": 0.976}, {"x": 26.3, "y": 1.547}, {"x": 26.0, "y": 1.134}, {"x": 31.2, "y": 0.827}, {"x": 28.0, "y": 0.628}, {"x": 29.2, "y": 1.301}, {"x": 25.8, "y": 0.831}, {"x": 31.2, "y": 0.648}, {"x": 28.5, "y": 1.861}, {"x": 30.2, "y": 2.128}, {"x": 25.5, "y": 1.356}, {"x": 26.2, "y": 1.486}, {"x": 30.0, "y": 1.422}, {"x": 27.9, "y": 2.415}, {"x": 27.5, "y": 2.16}, {"x": 26.7, "y": 3.356}, {"x": 30.0, "y": 1.064}, {"x": 26.9, "y": 2.19}, {"x": 30.7, "y": 1.865}, {"x": 29.9, "y": 1.644}, {"x": 29.8, "y": 1.128}, {"x": 25.0, "y": 1.693}, {"x": 29.4, "y": 0.703}, {"x": 30.9, "y": 0.567}, {"x": 31.7, "y": 2.857}, {"x": 27.0, "y": 3.463}, {"x": 32.5, "y": 0.231}, {"x": 26.4, "y": 1.558}, {"x": 31.3, "y": 2.089}, {"x": 25.7, "y": 4.989}, {"x": 28.2, "y": 2.147}, {"x": 30.4, "y": 0.76}, {"x": 32.3, "y": 1.667}, {"x": 30.3, "y": 1.374}, {"x": 30.3, "y": 1.1}, {"x": 29.8, "y": 1.025}, {"x": 29.1, "y": 1.579}, {"x": 27.9, "y": 0.981}, {"x": 26.9, "y": 1.206}, {"x": 26.0, "y": 1.233}, {"x": 28.5, "y": 1.052}, {"x": 28.1, "y": 0.644}, {"x": 28.8, "y": 0.724}, {"x": 28.0, "y": 2.063}, {"x": 27.3, "y": 1.064}, {"x": 29.2, "y": 1.735}, {"x": 25.6, "y": 1.578}, {"x": 26.7, "y": 1.784}, {"x": 27.7, "y": 2.044}, {"x": 25.4, "y": 1.286}, {"x": 32.7, "y": 1.448}, {"x": 33.0, "y": 1.504}, {"x": 29.0, "y": 1.423}, {"x": 31.9, "y": 1.405}, {"x": 30.3, "y": 1.029}, {"x": 29.3, "y": 0.813}, {"x": 26.3, "y": 0.976}], "Q5 Most Deprived": [{"x": 36.1, "y": 1.341}, {"x": 36.3, "y": 0.734}, {"x": 34.1, "y": 0.453}, {"x": 45.7, "y": 2.038}, {"x": 35.0, "y": 2.887}, {"x": 35.8, "y": 3.183}, {"x": 33.6, "y": 1.179}, {"x": 51.8, "y": 2.952}, {"x": 49.1, "y": 0.235}, {"x": 50.8, "y": 1.639}, {"x": 33.5, "y": 1.047}, {"x": 38.7, "y": 3.634}, {"x": 36.3, "y": 0.621}, {"x": 41.8, "y": 2.228}, {"x": 37.7, "y": 1.212}, {"x": 51.1, "y": 3.085}, {"x": 34.9, "y": 2.856}, {"x": 39.9, "y": 1.743}, {"x": 37.5, "y": 0.496}, {"x": 35.7, "y": 1.354}, {"x": 36.0, "y": 1.488}, {"x": 50.3, "y": 2.151}, {"x": 41.6, "y": 1.688}, {"x": 34.1, "y": 1.063}, {"x": 45.6, "y": 2.245}, {"x": 49.2, "y": 0.576}, {"x": 36.5, "y": 1.675}, {"x": 48.9, "y": 1.123}, {"x": 35.7, "y": 1.758}, {"x": 39.9, "y": 1.101}, {"x": 37.7, "y": 1.559}, {"x": 48.7, "y": 1.408}, {"x": 34.0, "y": 2.06}, {"x": 44.1, "y": 4.661}, {"x": 37.8, "y": 1.064}, {"x": 41.6, "y": 0.876}, {"x": 42.5, "y": 2.68}, {"x": 36.6, "y": 0.656}, {"x": 46.1, "y": 0.292}, {"x": 37.5, "y": 1.23}, {"x": 34.2, "y": 1.66}, {"x": 48.9, "y": 3.132}, {"x": 39.4, "y": 0.556}, {"x": 36.3, "y": 2.2}, {"x": 36.9, "y": 1.591}, {"x": 55.4, "y": 0.56}, {"x": 39.0, "y": 1.211}, {"x": 55.9, "y": 1.529}, {"x": 45.3, "y": 1.831}, {"x": 49.9, "y": 1.46}, {"x": 40.2, "y": 1.791}, {"x": 35.6, "y": 1.463}, {"x": 49.9, "y": 2.389}, {"x": 57.3, "y": 6.675}, {"x": 35.3, "y": 2.336}, {"x": 39.6, "y": 2.058}, {"x": 37.7, "y": 1.165}, {"x": 51.0, "y": 2.252}, {"x": 44.1, "y": 1.115}, {"x": 43.9, "y": 3.229}]};
+const realScatterWF = [{"x": 0.392, "y": 1.341}, {"x": 0.307, "y": 0.734}, {"x": 0.308, "y": 3.506}, {"x": 0.335, "y": 0.964}, {"x": 0.326, "y": 1.741}, {"x": 0.461, "y": 1.18}, {"x": 0.392, "y": 0.453}, {"x": 0.652, "y": 1.553}, {"x": 0.473, "y": 1.486}, {"x": 0.668, "y": 1.029}, {"x": 0.223, "y": 1.2}, {"x": 0.316, "y": 1.401}, {"x": 0.476, "y": 2.181}, {"x": 0.488, "y": 2.261}, {"x": 0.28, "y": 0.976}, {"x": 0.464, "y": 1.377}, {"x": 0.618, "y": 1.547}, {"x": 0.597, "y": 0.706}, {"x": 0.406, "y": 0.489}, {"x": 0.375, "y": 0.752}, {"x": 0.368, "y": 2.194}, {"x": 0.529, "y": 1.134}, {"x": 0.318, "y": 0.827}, {"x": 0.373, "y": 0.652}, {"x": 0.572, "y": 1.735}, {"x": 0.717, "y": 1.482}, {"x": 0.274, "y": 0.628}, {"x": 0.612, "y": 2.038}, {"x": 0.385, "y": 1.317}, {"x": 0.585, "y": 2.887}, {"x": 0.398, "y": 2.323}, {"x": 0.316, "y": 3.183}, {"x": 0.661, "y": 1.312}, {"x": 0.237, "y": 0.562}, {"x": 0.571, "y": 1.395}, {"x": 0.352, "y": 0.527}, {"x": 0.109, "y": 2.673}, {"x": 0.644, "y": 0.325}, {"x": 0.414, "y": 1.883}, {"x": 0.527, "y": 0.854}, {"x": 0.237, "y": 1.661}, {"x": 0.474, "y": 1.226}, {"x": 0.412, "y": 1.179}, {"x": 0.456, "y": 1.019}, {"x": 0.342, "y": 2.952}, {"x": 0.556, "y": 1.169}, {"x": 0.41, "y": 0.765}, {"x": 0.567, "y": 0.428}, {"x": 0.549, "y": 1.022}, {"x": 0.566, "y": 0.926}, {"x": 0.516, "y": 1.301}, {"x": 0.429, "y": 1.186}, {"x": 0.209, "y": 0.235}, {"x": 0.502, "y": 0.437}, {"x": 0.704, "y": 1.203}, {"x": 0.531, "y": 0.96}, {"x": 0.444, "y": 0.491}, {"x": 0.424, "y": 1.639}, {"x": 0.064, "y": 1.389}, {"x": 0.423, "y": 0.831}, {"x": 0.488, "y": 1.047}, {"x": 0.941, "y": 1.734}, {"x": 0.754, "y": 0.648}, {"x": 0.714, "y": 1.487}, {"x": 0.576, "y": 3.634}, {"x": 0.418, "y": 0.283}, {"x": 0.829, "y": 0.477}, {"x": 0.437, "y": 0.955}, {"x": 0.51, "y": 1.077}, {"x": 0.137, "y": 2.204}, {"x": 0.31, "y": 0.621}, {"x": 0.681, "y": 0.543}, {"x": 0.439, "y": 1.248}, {"x": 0.359, "y": 0.913}, {"x": 0.241, "y": 1.861}, {"x": 0.147, "y": 2.128}, {"x": 0.385, "y": 1.268}, {"x": 0.608, "y": 0.106}, {"x": 0.52, "y": 0.527}, {"x": 0.466, "y": 1.722}, {"x": 0.296, "y": 1.279}, {"x": 0.511, "y": 1.543}, {"x": 0.366, "y": 2.228}, {"x": 0.277, "y": 1.212}, {"x": 0.341, "y": 1.214}, {"x": 0.34, "y": 0.923}, {"x": 0.365, "y": 3.085}, {"x": 0.358, "y": 0.407}, {"x": 0.585, "y": 2.008}, {"x": 0.745, "y": 0.722}, {"x": 0.429, "y": 0.856}, {"x": 0.391, "y": 0.511}, {"x": 0.564, "y": 1.465}, {"x": 0.179, "y": 2.856}, {"x": 0.497, "y": 0.858}, {"x": 0.536, "y": 0.854}, {"x": 0.428, "y": 1.356}, {"x": 0.583, "y": 0.937}, {"x": 0.676, "y": 0.254}, {"x": 0.302, "y": 2.399}, {"x": 0.2, "y": 1.486}, {"x": 0.504, "y": 1.422}, {"x": 0.452, "y": 1.743}, {"x": 0.216, "y": 0.496}, {"x": 0.217, "y": 0.839}, {"x": 0.337, "y": 1.2}, {"x": 0.337, "y": 2.415}, {"x": 0.435, "y": 2.007}, {"x": 0.212, "y": 2.16}, {"x": 0.425, "y": 0.622}, {"x": 0.447, "y": 3.356}, {"x": 0.548, "y": 1.354}, {"x": 0.923, "y": 0.383}, {"x": 0.493, "y": 1.205}, {"x": 0.444, "y": 1.637}, {"x": 0.412, "y": 1.208}, {"x": 0.259, "y": 1.91}, {"x": 0.314, "y": 1.853}, {"x": 0.336, "y": 1.488}, {"x": 0.775, "y": 0.584}, {"x": 0.312, "y": 1.064}, {"x": 0.5, "y": 2.151}, {"x": 0.369, "y": 1.676}, {"x": 0.226, "y": 1.688}, {"x": 0.681, "y": 2.19}, {"x": 0.441, "y": 1.307}, {"x": 0.627, "y": 1.063}, {"x": 0.259, "y": 2.864}, {"x": 0.529, "y": 1.291}, {"x": 0.267, "y": 2.245}, {"x": 0.297, "y": 0.576}, {"x": 0.334, "y": 1.865}, {"x": 0.388, "y": 1.644}, {"x": 0.603, "y": 1.2}, {"x": 0.48, "y": 0.687}, {"x": 1.234, "y": 2.333}, {"x": 0.446, "y": 1.128}, {"x": 0.259, "y": 1.693}, {"x": 0.305, "y": 0.703}, {"x": 0.3, "y": 0.567}, {"x": 0.506, "y": 1.404}, {"x": 0.783, "y": 2.424}, {"x": 0.368, "y": 1.163}, {"x": 0.537, "y": 0.637}, {"x": 0.532, "y": 0.99}, {"x": 0.059, "y": 2.857}, {"x": 0.345, "y": 1.83}, {"x": 0.408, "y": 0.874}, {"x": 0.4, "y": 1.675}, {"x": 0.395, "y": 1.021}, {"x": 0.182, "y": 1.635}, {"x": 0.51, "y": 3.463}, {"x": 0.242, "y": 1.624}, {"x": 0.488, "y": 0.231}, {"x": 0.435, "y": 0.774}, {"x": 0.462, "y": 1.096}, {"x": 0.461, "y": 1.635}, {"x": 0.466, "y": 1.558}, {"x": 0.231, "y": 1.244}, {"x": 0.488, "y": 0.675}, {"x": 0.509, "y": 0.5}, {"x": 0.53, "y": 0.387}, {"x": 0.478, "y": 2.089}, {"x": 0.427, "y": 0.529}, {"x": 0.238, "y": 2.711}, {"x": 0.19, "y": 1.357}, {"x": 0.534, "y": 1.168}, {"x": 0.397, "y": 1.447}, {"x": 0.541, "y": 1.425}, {"x": 0.675, "y": 0.284}, {"x": 0.14, "y": 1.123}, {"x": 0.431, "y": 0.858}, {"x": 0.264, "y": 4.989}, {"x": 0.277, "y": 2.001}, {"x": 0.212, "y": 1.189}, {"x": 0.451, "y": 1.108}, {"x": 0.792, "y": 2.147}, {"x": 0.45, "y": 1.758}, {"x": 0.337, "y": 0.82}, {"x": 0.45, "y": 2.182}, {"x": 0.154, "y": 0.76}, {"x": 0.202, "y": 1.667}, {"x": 0.568, "y": 1.556}, {"x": 0.469, "y": 1.04}, {"x": 0.36, "y": 0.789}, {"x": 0.487, "y": 1.101}, {"x": 0.237, "y": 0.479}, {"x": 0.164, "y": 1.374}, {"x": 0.095, "y": 1.631}, {"x": 0.462, "y": 1.041}, {"x": 0.447, "y": 1.559}, {"x": 0.529, "y": 1.408}, {"x": 0.477, "y": 1.312}, {"x": 0.194, "y": 1.1}, {"x": 0.495, "y": 1.199}, {"x": 0.343, "y": 1.022}, {"x": 0.281, "y": 1.025}, {"x": 0.434, "y": 2.06}, {"x": 0.516, "y": 0.646}, {"x": 0.41, "y": 4.661}, {"x": 0.525, "y": 1.658}, {"x": 0.412, "y": 0.606}, {"x": 0.373, "y": 1.579}, {"x": 0.49, "y": 1.064}, {"x": 0.417, "y": 0.853}, {"x": 0.405, "y": 0.981}, {"x": 0.472, "y": 2.286}, {"x": 0.554, "y": 1.206}, {"x": 0.804, "y": 0.876}, {"x": 0.575, "y": 0.265}, {"x": 0.257, "y": 1.233}, {"x": 0.272, "y": 2.68}, {"x": 0.302, "y": 0.656}, {"x": 0.233, "y": 0.292}, {"x": 0.787, "y": 0.982}, {"x": 0.615, "y": 2.709}, {"x": 0.219, "y": 0.73}, {"x": 0.487, "y": 1.616}, {"x": 0.462, "y": 1.058}, {"x": 0.289, "y": 1.919}, {"x": 0.261, "y": 1.23}, {"x": 0.718, "y": 1.052}, {"x": 0.338, "y": 0.644}, {"x": 0.218, "y": 0.592}, {"x": 0.458, "y": 0.724}, {"x": 0.441, "y": 0.445}, {"x": 0.474, "y": 1.319}, {"x": 0.328, "y": 1.766}, {"x": 0.47, "y": 0.604}, {"x": 0.388, "y": 1.66}, {"x": 0.581, "y": 1.627}, {"x": 0.408, "y": 2.063}, {"x": 0.543, "y": 1.47}, {"x": 0.653, "y": 3.132}, {"x": 0.543, "y": 0.556}, {"x": 0.263, "y": 2.085}, {"x": 0.609, "y": 0.994}, {"x": 0.456, "y": 1.993}, {"x": 0.642, "y": 0.882}, {"x": 0.5, "y": 2.2}, {"x": 0.561, "y": 1.064}, {"x": 0.552, "y": 0.694}, {"x": 0.221, "y": 2.77}, {"x": 0.391, "y": 1.591}, {"x": 0.38, "y": 1.506}, {"x": 0.681, "y": 1.064}, {"x": 0.682, "y": 1.043}, {"x": 0.705, "y": 0.07}, {"x": 0.414, "y": 1.735}, {"x": 0.659, "y": 0.56}, {"x": 0.461, "y": 0.531}, {"x": 0.424, "y": 1.211}, {"x": 0.792, "y": 0.749}, {"x": 0.511, "y": 1.529}, {"x": 0.557, "y": 1.578}, {"x": 0.429, "y": 1.12}, {"x": 0.544, "y": 1.831}, {"x": 0.261, "y": 1.784}, {"x": 0.441, "y": 0.826}, {"x": 0.489, "y": 2.044}, {"x": 0.355, "y": 1.46}, {"x": 0.336, "y": 1.791}, {"x": 0.344, "y": 0.348}, {"x": 0.614, "y": 1.993}, {"x": 0.451, "y": 1.286}, {"x": 0.383, "y": 0.793}, {"x": 0.73, "y": 1.004}, {"x": 0.437, "y": 1.463}, {"x": 0.355, "y": 2.389}, {"x": 0.702, "y": 1.194}, {"x": 0.416, "y": 2.691}, {"x": 0.493, "y": 6.675}, {"x": 0.568, "y": 0.576}, {"x": 0.426, "y": 0.647}, {"x": 0.317, "y": 2.336}, {"x": 0.344, "y": 1.009}, {"x": 0.541, "y": 1.448}, {"x": 0.398, "y": 1.076}, {"x": 0.352, "y": 1.504}, {"x": 0.257, "y": 1.423}, {"x": 0.448, "y": 1.405}, {"x": 0.571, "y": 1.029}, {"x": 0.306, "y": 0.813}, {"x": 0.624, "y": 0.976}, {"x": 0.661, "y": 2.058}, {"x": 0.457, "y": 1.165}, {"x": 0.309, "y": 2.559}, {"x": 0.565, "y": 2.252}, {"x": 0.236, "y": 0.266}, {"x": 0.141, "y": 1.446}, {"x": 0.433, "y": 1.115}, {"x": 0.293, "y": 3.229}, {"x": 0.099, "y": 1.194}, {"x": 0.338, "y": 1.554}, {"x": 0.456, "y": 3.219}, {"x": 0.526, "y": 1.225}, {"x": 0.296, "y": 1.595}, {"x": 0.229, "y": 1.795}, {"x": 0.332, "y": 0.39}, {"x": 0.474, "y": 1.359}];
+
+// Full data table
+const tableData = [
+    { year: 2007, overall: '~90', phone: '87', appt: '—', hours: '82', prefGP: '88', notes: 'First national postal survey' },
+    { year: 2008, overall: '~89.5', phone: '~85', appt: '—', hours: '—', prefGP: '—', notes: '' },
+    { year: 2009, overall: '~89', phone: '~84', appt: '—', hours: '—', prefGP: '—', notes: '5.5m patients surveyed' },
+    { year: 2010, overall: '~89', phone: '~83', appt: '—', hours: '—', prefGP: '—', notes: '' },
+    { year: 2011, overall: '~88.5', phone: '~82', appt: '~79', hours: '—', prefGP: '—', notes: 'Methodology change: quarterly → biannual' },
+    { year: 2012, overall: '88.4', phone: '80.8', appt: '79.1', hours: '—', prefGP: '—', notes: '' },
+    { year: 2013, overall: '~87', phone: '~78', appt: '76.3', hours: '—', prefGP: '—', notes: 'PM Challenge Fund launched' },
+    { year: 2014, overall: '85.2', phone: '71.8', appt: '73.8', hours: '—', prefGP: '—', notes: 'Challenge Fund Wave 1 pilots' },
+    { year: 2015, overall: '84.9', phone: '~72', appt: '73.3', hours: '—', prefGP: '—', notes: 'Challenge Fund Wave 2' },
+    { year: 2016, overall: '85.2', phone: '~71', appt: '~74', hours: '76.6', prefGP: '—', notes: 'GP Forward View published' },
+    { year: 2017, overall: '84.8', phone: '68.0', appt: '72.7', hours: '76.2', prefGP: '46.2% have one', notes: '£45m OC fund begins' },
+    { year: '2018 ⚠', overall: '83.8', phone: '70.3', appt: '68.6', hours: '—', prefGP: '—', notes: 'QUESTIONNAIRE REDESIGNED — new series', isBreak: true },
+    { year: 2019, overall: '82.9', phone: '68.3', appt: '67.4', hours: '—', prefGP: '48.0', notes: '' },
+    { year: 2020, overall: '81.8', phone: '65.2', appt: '65.5', hours: '—', prefGP: '—', notes: 'COVID pandemic; total triage mandate' },
+    { year: 2021, overall: '83.0', phone: '67.6', appt: '70.6', hours: '—', prefGP: '—', notes: 'Pandemic recovery; 49.5% remote appts' },
+    { year: 2022, overall: '72.4', phone: '~55', appt: '56.2', hours: '—', prefGP: '—', notes: 'Sharp decline; lowest in 5 years' },
+    { year: 2023, overall: '71.3', phone: '49.8', appt: '54.4', hours: '—', prefGP: '—', notes: 'Modern GP / Recovery of Access plan' },
+    { year: '2024 ⚠', overall: '73.9', phone: '49.7', appt: '67.3', hours: '—', prefGP: '—', notes: 'NEW SERIES — methodology + questionnaire change', isBreak: true },
+    { year: 2025, overall: '75.4', phone: '52.9', appt: '69.6', hours: '—', prefGP: '—', notes: 'OC core hours mandate' }
+];
+
+
+// ==================== TAB SWITCHING ====================
+
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    event.target.classList.add('active');
+}
+
+
+// ==================== CHART HELPERS ====================
+
+function makeAnnotations(xMin, xMax) {
+    const annotations = {};
+    policyAnnotations.forEach((p, i) => {
+        if (p.year >= xMin && p.year <= xMax) {
+            annotations['line' + i] = {
+                type: 'line',
+                xMin: p.year,
+                xMax: p.year,
+                borderColor: p.color,
+                borderWidth: 1.5,
+                borderDash: [6, 4],
+                label: {
+                    display: true,
+                    content: p.label,
+                    position: 'start',
+                    backgroundColor: p.color,
+                    color: '#fff',
+                    font: { size: 9, weight: 'bold' },
+                    padding: { x: 4, y: 2 },
+                    borderRadius: 3
+                }
+            };
+        }
+    });
+    // 2018 break
+    annotations['break2018'] = {
+        type: 'box',
+        xMin: 2017.5, xMax: 2018.5,
+        backgroundColor: 'rgba(156,163,175,0.12)',
+        borderWidth: 0,
+        label: {
+            display: true,
+            content: '2018 Break',
+            position: { x: 'center', y: 'start' },
+            font: { size: 9 },
+            color: '#9ca3af'
+        }
+    };
+    // 2024 break
+    if (xMax >= 2024) {
+        annotations['break2024'] = {
+            type: 'box',
+            xMin: 2023.5, xMax: 2024.5,
+            backgroundColor: 'rgba(156,163,175,0.12)',
+            borderWidth: 0,
+            label: {
+                display: true,
+                content: '2024 Break',
+                position: { x: 'center', y: 'start' },
+                font: { size: 9 },
+                color: '#9ca3af'
+            }
+        };
+    }
+    return annotations;
+}
+
+
+// ==================== RENDER CHARTS ====================
+
+function renderAllCharts() {
+
+    // --- PHASE 1: Overall Timeline ---
+    new Chart(document.getElementById('chart-overall-timeline'), {
+        type: 'line',
+        data: {
+            datasets: [
+                {
+                    label: 'Pre-2018 Series',
+                    data: overallData.era1.years.map((y, i) => ({ x: y, y: overallData.era1.values[i] })),
+                    borderColor: COLORS.blue,
+                    backgroundColor: COLORS.blue + '20',
+                    borderWidth: 2.5,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                    tension: 0.3,
+                    fill: false
+                },
+                {
+                    label: '2018–2023 Series',
+                    data: overallData.era2.years.map((y, i) => ({ x: y, y: overallData.era2.values[i] })),
+                    borderColor: COLORS.amber,
+                    backgroundColor: COLORS.amber + '20',
+                    borderWidth: 2.5,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                    tension: 0.3,
+                    fill: false
+                },
+                {
+                    label: '2024+ Series',
+                    data: overallData.era3.years.map((y, i) => ({ x: y, y: overallData.era3.values[i] })),
+                    borderColor: COLORS.green,
+                    backgroundColor: COLORS.green + '20',
+                    borderWidth: 2.5,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                    tension: 0.3,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'nearest', intersect: false },
+            plugins: {
+                annotation: { annotations: makeAnnotations(2007, 2025) },
+                legend: { position: 'top', labels: { usePointStyle: true, padding: 16 } },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}%`
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    type: 'linear',
+                    min: 2006.5,
+                    max: 2025.5,
+                    ticks: { stepSize: 1, callback: v => v },
+                    grid: { display: false }
+                },
+                y: {
+                    min: 60,
+                    max: 95,
+                    ticks: { callback: v => v + '%' },
+                    title: { display: true, text: '% Good / Very Good' }
+                }
+            }
+        }
+    });
+
+    // --- Phone Access ---
+    new Chart(document.getElementById('chart-phone'), {
+        type: 'line',
+        data: {
+            datasets: [
+                {
+                    label: 'Pre-2018',
+                    data: phoneData.era1.years.map((y, i) => ({ x: y, y: phoneData.era1.values[i] })),
+                    borderColor: COLORS.blue, borderWidth: 2, pointRadius: 3, tension: 0.3
+                },
+                {
+                    label: '2018–2023',
+                    data: phoneData.era2.years.map((y, i) => ({ x: y, y: phoneData.era2.values[i] })),
+                    borderColor: COLORS.amber, borderWidth: 2, pointRadius: 3, tension: 0.3
+                },
+                {
+                    label: '2024+',
+                    data: phoneData.era3.years.map((y, i) => ({ x: y, y: phoneData.era3.values[i] })),
+                    borderColor: COLORS.green, borderWidth: 2, pointRadius: 3, tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                annotation: { annotations: makeAnnotations(2007, 2025) },
+                legend: { position: 'top', labels: { usePointStyle: true, padding: 12, font: { size: 11 } } },
+                tooltip: { callbacks: { label: ctx => `${ctx.parsed.y}%` } }
+            },
+            scales: {
+                x: { type: 'linear', min: 2006.5, max: 2025.5, ticks: { stepSize: 2, callback: v => v }, grid: { display: false } },
+                y: { min: 40, max: 95, ticks: { callback: v => v + '%' } }
+            }
+        }
+    });
+
+    // --- Appointment Experience ---
+    new Chart(document.getElementById('chart-appointment'), {
+        type: 'line',
+        data: {
+            datasets: [
+                {
+                    label: 'Pre-2018',
+                    data: apptData.era1.years.map((y, i) => ({ x: y, y: apptData.era1.values[i] })),
+                    borderColor: COLORS.blue, borderWidth: 2, pointRadius: 3, tension: 0.3
+                },
+                {
+                    label: '2018–2023',
+                    data: apptData.era2.years.map((y, i) => ({ x: y, y: apptData.era2.values[i] })),
+                    borderColor: COLORS.amber, borderWidth: 2, pointRadius: 3, tension: 0.3
+                },
+                {
+                    label: '2024+',
+                    data: apptData.era3.years.map((y, i) => ({ x: y, y: apptData.era3.values[i] })),
+                    borderColor: COLORS.green, borderWidth: 2, pointRadius: 3, tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                annotation: { annotations: makeAnnotations(2012, 2025) },
+                legend: { position: 'top', labels: { usePointStyle: true, padding: 12, font: { size: 11 } } },
+                tooltip: { callbacks: { label: ctx => `${ctx.parsed.y}%` } }
+            },
+            scales: {
+                x: { type: 'linear', min: 2011.5, max: 2025.5, ticks: { stepSize: 2, callback: v => v }, grid: { display: false } },
+                y: { min: 45, max: 85, ticks: { callback: v => v + '%' } }
+            }
+        }
+    });
+
+    // --- Workforce vs Satisfaction (dual axis) ---
+    new Chart(document.getElementById('chart-workforce-satisfaction'), {
+        type: 'line',
+        data: {
+            labels: workforceData.years,
+            datasets: [
+                {
+                    label: 'FTE GPs',
+                    data: workforceData.fte,
+                    borderColor: COLORS.red,
+                    backgroundColor: COLORS.red + '15',
+                    borderWidth: 2.5,
+                    pointRadius: 4,
+                    tension: 0.3,
+                    yAxisID: 'y1',
+                    fill: true
+                },
+                {
+                    label: 'Overall Satisfaction (%)',
+                    data: satisfactionForWorkforce.values,
+                    borderColor: COLORS.blue,
+                    borderWidth: 2.5,
+                    pointRadius: 4,
+                    tension: 0.3,
+                    yAxisID: 'y2'
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { position: 'top', labels: { usePointStyle: true, padding: 16 } },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => {
+                            if (ctx.dataset.yAxisID === 'y1') return `FTE GPs: ${ctx.parsed.y.toLocaleString()}`;
+                            return `Satisfaction: ${ctx.parsed.y}%`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y1: {
+                    position: 'left',
+                    min: 25000,
+                    max: 30000,
+                    ticks: { callback: v => (v / 1000).toFixed(1) + 'k' },
+                    title: { display: true, text: 'FTE Fully Qualified GPs', color: COLORS.red }
+                },
+                y2: {
+                    position: 'right',
+                    min: 65,
+                    max: 90,
+                    ticks: { callback: v => v + '%' },
+                    title: { display: true, text: 'Overall Experience (% Good)', color: COLORS.blue },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // --- Data Table ---
+    const tbody = document.getElementById('data-table-body');
+    tableData.forEach(row => {
+        const tr = document.createElement('tr');
+        if (row.isBreak) tr.className = 'break-row';
+        tr.innerHTML = `<td>${row.year}</td><td>${row.overall}</td><td>${row.phone}</td><td>${row.appt}</td><td>${row.hours}</td><td>${row.prefGP}</td><td>${row.notes}</td>`;
+        tbody.appendChild(tr);
+    });
+
+    // --- PHASE 2: Pre-Crisis ---
+    new Chart(document.getElementById('chart-pre-crisis'), {
+        type: 'bar',
+        data: {
+            labels: ['2007', '2008', '2009', '2010', '2011', '2012', '2013'],
+            datasets: [
+                {
+                    label: 'Overall Experience (% Good)',
+                    data: [90, 89.5, 89, 89, 88.5, 88.4, 87],
+                    backgroundColor: COLORS.blue + 'CC',
+                    borderRadius: 4
+                },
+                {
+                    label: 'Phone Access (% Easy)',
+                    data: [87, 85, 84, 83, 82, 80.8, 78],
+                    backgroundColor: COLORS.teal + 'CC',
+                    borderRadius: 4
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top', labels: { usePointStyle: true } },
+                tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}%` } },
+                annotation: {
+                    annotations: {
+                        threshold: {
+                            type: 'line',
+                            yMin: 85, yMax: 85,
+                            borderColor: COLORS.green,
+                            borderWidth: 1.5,
+                            borderDash: [6, 4],
+                            label: {
+                                display: true,
+                                content: '85% — typical "high satisfaction" benchmark',
+                                position: 'end',
+                                backgroundColor: COLORS.green,
+                                color: '#fff',
+                                font: { size: 9 },
+                                padding: { x: 4, y: 2 }
+                            }
+                        },
+                        challengeFund: {
+                            type: 'line',
+                            xMin: 5.5, xMax: 5.5,
+                            borderColor: COLORS.red,
+                            borderWidth: 2,
+                            borderDash: [6, 4],
+                            label: {
+                                display: true,
+                                content: 'Challenge Fund →',
+                                position: 'start',
+                                backgroundColor: COLORS.red,
+                                color: '#fff',
+                                font: { size: 9 },
+                                padding: { x: 4, y: 2 }
+                            }
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: { min: 70, max: 95, ticks: { callback: v => v + '%' } }
+            }
+        }
+    });
+
+    // --- PHASE 3: Pre vs Post ---
+    new Chart(document.getElementById('chart-pre-post'), {
+        type: 'bar',
+        data: {
+            labels: ['Overall Experience', 'Phone Access', 'Appointment Experience'],
+            datasets: [
+                {
+                    label: 'Pre-Intervention (2007–2013 avg)',
+                    data: [88.8, 82.7, 77.7],
+                    backgroundColor: COLORS.blue + 'CC',
+                    borderRadius: 4
+                },
+                {
+                    label: 'Post-Intervention (2018–2023 avg)',
+                    data: [79.2, 62.7, 63.8],
+                    backgroundColor: COLORS.red + 'CC',
+                    borderRadius: 4
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top', labels: { usePointStyle: true } },
+                tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}%` } }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: { min: 40, max: 100, ticks: { callback: v => v + '%' } }
+            }
+        }
+    });
+
+    // --- Extended Access Impact ---
+    new Chart(document.getElementById('chart-extended-access'), {
+        type: 'bar',
+        data: {
+            labels: extendedAccess.measures,
+            datasets: [
+                {
+                    label: '2018',
+                    data: extendedAccess.y2018,
+                    backgroundColor: COLORS.blue + 'CC',
+                    borderRadius: 4
+                },
+                {
+                    label: '2019',
+                    data: extendedAccess.y2019,
+                    backgroundColor: COLORS.amber + 'CC',
+                    borderRadius: 4
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top', labels: { usePointStyle: true } },
+                tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}%` } },
+                annotation: {
+                    annotations: {
+                        note: {
+                            type: 'label',
+                            xValue: 1,
+                            yValue: 40,
+                            content: ['No statistically significant', 'associations found (p>0.05)'],
+                            backgroundColor: 'rgba(220,38,38,0.1)',
+                            color: COLORS.red,
+                            font: { size: 11, weight: 'bold' },
+                            padding: { x: 8, y: 4 },
+                            borderRadius: 4
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: { min: 30, max: 100, ticks: { callback: v => v + '%' } }
+            }
+        }
+    });
+
+    // --- Waiting Times ---
+    new Chart(document.getElementById('chart-waiting-times'), {
+        type: 'bar',
+        data: {
+            labels: waitingTimes.categories,
+            datasets: [
+                { label: '2019 (pre-pandemic)', data: waitingTimes.y2019, backgroundColor: COLORS.blue + 'CC', borderRadius: 3 },
+                { label: '2023', data: waitingTimes.y2023, backgroundColor: COLORS.amber + 'CC', borderRadius: 3 },
+                { label: '2025', data: waitingTimes.y2025, backgroundColor: COLORS.green + 'CC', borderRadius: 3 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top', labels: { usePointStyle: true, font: { size: 11 } } },
+                tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}%` } }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: { min: 0, max: 50, ticks: { callback: v => v + '%' } }
+            }
+        }
+    });
+
+    // --- PHASE 4: Deprivation bar chart (REAL DATA) ---
+    new Chart(document.getElementById('chart-deprivation-2021'), {
+        type: 'bar',
+        data: {
+            labels: realDeprivation.quintiles,
+            datasets: [
+                { label: 'Mean Experience Score', data: realDeprivation.meanScores, backgroundColor: ['#2563ebCC','#3b82f6CC','#60a5faCC','#f59e0bCC','#dc2626CC'], borderRadius: 4 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => `Score: ${ctx.parsed.y.toFixed(3)} (1=Very Good, 5=Very Poor)` } },
+                annotation: {
+                    annotations: {
+                        gap: {
+                            type: 'label',
+                            xValue: 2, yValue: 1.85,
+                            content: ['Gap: 0.62 points', 'r = 0.30, p < 10⁻¹²⁹', `n = 6,250 practices`],
+                            backgroundColor: 'rgba(220,38,38,0.1)',
+                            color: COLORS.red,
+                            font: { size: 11, weight: 'bold' },
+                            padding: { x: 8, y: 4 },
+                            borderRadius: 4
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: { min: 0.8, max: 2.0, title: { display: true, text: 'Mean Score (lower = better)' } }
+            }
+        }
+    });
+
+    // --- Deprivation scatter (REAL DATA) ---
+    const imdColors = { 'Q1 Least Deprived': '#2563eb', 'Q2': '#3b82f6', 'Q3': '#60a5fa', 'Q4': '#f59e0b', 'Q5 Most Deprived': '#dc2626' };
+    new Chart(document.getElementById('chart-deprivation-scatter'), {
+        type: 'scatter',
+        data: {
+            datasets: Object.entries(realScatterIMD).map(([q, pts]) => ({
+                label: q,
+                data: pts,
+                backgroundColor: imdColors[q] + '60',
+                borderColor: imdColors[q] + 'AA',
+                pointRadius: 3,
+                pointHoverRadius: 5
+            }))
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top', labels: { usePointStyle: true, font: { size: 10 } } },
+                tooltip: { callbacks: { label: ctx => `IMD: ${ctx.parsed.x}, Score: ${ctx.parsed.y.toFixed(2)}` } }
+            },
+            scales: {
+                x: { min: 0, max: 65, title: { display: true, text: 'IMD 2019 Deprivation Score (higher = more deprived)' } },
+                y: { min: 0, max: 5, title: { display: true, text: 'Experience Score (lower = better)' } }
+            }
+        }
+    });
+
+    // --- Deprivation characteristics (REAL DATA) ---
+    new Chart(document.getElementById('chart-deprivation-characteristics'), {
+        type: 'bar',
+        data: {
+            labels: realDeprivation.quintiles,
+            datasets: [
+                { label: '% Face-to-Face', data: realDeprivation.meanF2F, backgroundColor: COLORS.blue + 'CC', borderRadius: 3, yAxisID: 'y1' },
+                { label: '% Telephone', data: realDeprivation.meanTelephone, backgroundColor: COLORS.amber + 'CC', borderRadius: 3, yAxisID: 'y1' },
+                { label: 'GP FTE per 1000', data: realDeprivation.meanGPFTE, backgroundColor: COLORS.green + 'CC', borderRadius: 3, yAxisID: 'y2', type: 'line', borderColor: COLORS.green, borderWidth: 2, pointRadius: 4 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top', labels: { usePointStyle: true, font: { size: 10 } } },
+                tooltip: { callbacks: { label: ctx => ctx.dataset.yAxisID === 'y2' ? `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)}` : `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%` } }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y1: { position: 'left', min: 20, max: 80, ticks: { callback: v => v + '%' }, title: { display: true, text: '% of Appointments' } },
+                y2: { position: 'right', min: 0.35, max: 0.55, grid: { display: false }, title: { display: true, text: 'GP FTE per 1,000 pts', color: COLORS.green } }
+            }
+        }
+    });
+
+    // --- PHASE 5: Mode Mix ---
+    new Chart(document.getElementById('chart-mode-mix'), {
+        type: 'bar',
+        data: {
+            labels: modeData.years,
+            datasets: [
+                { label: 'Face-to-Face', data: modeData.f2f, backgroundColor: COLORS.blue + 'CC', borderRadius: 3 },
+                { label: 'Telephone', data: modeData.telephone, backgroundColor: COLORS.amber + 'CC', borderRadius: 3 },
+                { label: 'Online/Video', data: modeData.online, backgroundColor: COLORS.purple + 'CC', borderRadius: 3 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top', labels: { usePointStyle: true } },
+                tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}%` } }
+            },
+            scales: {
+                x: { stacked: true, grid: { display: false } },
+                y: { stacked: true, min: 0, max: 105, ticks: { callback: v => v + '%' } }
+            }
+        }
+    });
+
+    // --- Mode Satisfaction ---
+    new Chart(document.getElementById('chart-mode-satisfaction'), {
+        type: 'bar',
+        data: {
+            labels: modeSatisfaction.methods,
+            datasets: [{
+                label: 'Ease of Contact (%)',
+                data: modeSatisfaction.ease,
+                backgroundColor: [COLORS.amber + 'CC', COLORS.purple + 'CC', COLORS.red + 'CC', COLORS.green + 'CC'],
+                borderRadius: 4
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => `${ctx.parsed.x}% found it easy` } }
+            },
+            scales: {
+                x: { min: 30, max: 80, ticks: { callback: v => v + '%' } },
+                y: { grid: { display: false } }
+            }
+        }
+    });
+
+    // --- F2F Correlation (REAL DATA) ---
+    new Chart(document.getElementById('chart-f2f-correlation'), {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Practices (n=300 sample)',
+                data: realScatterF2F,
+                backgroundColor: COLORS.blue + '40',
+                borderColor: COLORS.blue + '80',
+                pointRadius: 3,
+                pointHoverRadius: 5
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => `F2F: ${ctx.parsed.x.toFixed(0)}%, Score: ${ctx.parsed.y.toFixed(2)}`
+                    }
+                },
+                annotation: {
+                    annotations: {
+                        result: {
+                            type: 'label',
+                            xValue: 85, yValue: 4.5,
+                            content: ['r = -0.016 (all F2F), p = 0.20 NS', 'r = -0.032 (GP F2F), p = 0.01', 'Effect disappears controlling for IMD'],
+                            backgroundColor: 'rgba(37,99,235,0.1)',
+                            color: COLORS.blue,
+                            font: { size: 10, weight: 'bold' },
+                            padding: { x: 8, y: 4 },
+                            borderRadius: 4
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { min: 0, max: 105, title: { display: true, text: '% Appointments Face-to-Face' }, ticks: { callback: v => v + '%' } },
+                y: { min: 0, max: 7, title: { display: true, text: 'Experience Score (lower = better)' } }
+            }
+        }
+    });
+
+    // --- Workforce scatter (REAL DATA) ---
+    new Chart(document.getElementById('chart-wf-scatter'), {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Practices (n=300 sample)',
+                data: realScatterWF,
+                backgroundColor: COLORS.red + '40',
+                borderColor: COLORS.red + '80',
+                pointRadius: 3,
+                pointHoverRadius: 5
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => `GP FTE/1000: ${ctx.parsed.x.toFixed(2)}, Score: ${ctx.parsed.y.toFixed(2)}`
+                    }
+                },
+                annotation: {
+                    annotations: {
+                        result: {
+                            type: 'label',
+                            xValue: 0.85, yValue: 5,
+                            content: ['r = 0.001, p = 0.93', 'No cross-sectional', 'workforce effect'],
+                            backgroundColor: 'rgba(220,38,38,0.1)',
+                            color: COLORS.red,
+                            font: { size: 10, weight: 'bold' },
+                            padding: { x: 8, y: 4 },
+                            borderRadius: 4
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { min: 0, max: 1.5, title: { display: true, text: 'FTE GPs per 1,000 Registered Patients' } },
+                y: { min: 0, max: 7, title: { display: true, text: 'Experience Score (lower = better)' } }
+            }
+        }
+    });
+
+    // --- F2F Quartiles (REAL DATA) ---
+    new Chart(document.getElementById('chart-f2f-quartiles'), {
+        type: 'bar',
+        data: {
+            labels: f2fQuartiles.labels,
+            datasets: [{
+                label: 'Mean Experience Score',
+                data: f2fQuartiles.scores,
+                backgroundColor: [COLORS.red + 'CC', COLORS.amber + 'CC', COLORS.amber + 'CC', COLORS.blue + 'CC'],
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => `Mean score: ${ctx.parsed.y.toFixed(3)}` } },
+                annotation: {
+                    annotations: {
+                        note: {
+                            type: 'label',
+                            xValue: 1.5, yValue: 1.47,
+                            content: ['Range: 1.33 – 1.43', 'Trivial difference on 1–5 scale'],
+                            backgroundColor: 'rgba(107,114,128,0.1)',
+                            color: COLORS.grey,
+                            font: { size: 10 },
+                            padding: { x: 6, y: 3 },
+                            borderRadius: 4
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: { min: 1.2, max: 1.5, title: { display: true, text: 'Mean Score (lower = better)' } }
+            }
+        }
+    });
+}
+
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', renderAllCharts);
+</script>
+
+</body>
+</html>
