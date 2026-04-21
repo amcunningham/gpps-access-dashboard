@@ -325,7 +325,7 @@
 
         <div class="narrative-box">
             <h3>Finding: No evidence of an access crisis in the patient survey data</h3>
-            <p>Between 2007 and 2013, overall GP experience satisfaction ranged from <span class="highlight">~87% to ~90%</span>. Phone access satisfaction was around 81–87%. The proportion of patients able to see a preferred GP was approximately 88% in the earliest surveys.</p>
+            <p>Between 2007 and 2013, overall GP experience satisfaction ranged from <span class="highlight">~87% to ~90%</span>. Phone access satisfaction was around 78–87%. The proportion of patients able to see a preferred GP was approximately 88% in the earliest surveys.</p>
             <p>These are exceptionally high satisfaction levels by any public service standard. The PM's Challenge Fund (2013) was launched into a system where roughly 9 in 10 patients reported good experience. The Challenge Fund's own evaluation (<a href="https://www.england.nhs.uk/publication/prime-ministers-challenge-fund-improving-access-to-general-practice/" target="_blank" rel="noopener noreferrer">NHS England/Ipsos MORI, 2015</a>) found <span class="highlight">90% of patients</span> in participating practices rated appointment convenience positively — but this was measured only within the pilots, with no pre-intervention baseline and no control group, making it impossible to attribute to the intervention itself.</p>
             <p>The political narrative of an "access crisis" was not supported by the patient survey data available at the time. Access satisfaction was high and had been stable for years. The decline that did subsequently occur (from ~88% in 2012 to 71% in 2023) happened <em>during and after</em> the intervention period, not before it.</p>
             <p class="source">Sources: <a href="https://www.gp-patient.co.uk/" target="_blank" rel="noopener noreferrer">GPPS national results 2007–2013</a>; <a href="https://www.england.nhs.uk/publication/prime-ministers-challenge-fund-improving-access-to-general-practice/" target="_blank" rel="noopener noreferrer">PM's Challenge Fund Wave 1 Evaluation (NHS England/Ipsos MORI, 2015)</a></p>
@@ -545,8 +545,8 @@ const overallData = {
 // Phone access (% easy to get through)
 const phoneData = {
     era1: {
-        years: [2007, 2008, 2009, 2010, 2011, 2012, 2014, 2015, 2016, 2017],
-        values: [87, 85, 84, 83, 82, 80.8, 71.8, 72, 71, 68]
+        years: [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017],
+        values: [87, 85, 84, 83, 82, 80.8, 78, 71.8, 72, 71, 68]
     },
     era2: {
         years: [2018, 2019, 2020, 2021, 2022, 2023],
@@ -631,7 +631,11 @@ const modeSatisfaction = {
 
 // Extended access data from BJGP Open 2022
 const extendedAccess = {
-    measures: ['See Preferred GP\n(always/often)', 'Satisfied with\nAppt Times', 'Overall Experience\n(good/very good)'],
+    measures: [
+        ['See Preferred GP', '(always/often)'],
+        ['Satisfied with', 'Appt Times'],
+        ['Overall Experience', '(good/very good)']
+    ],
     y2018: [51.8, 67.6, 84.6],
     y2019: [49.6, 66.5, 83.9]
 };
@@ -821,8 +825,8 @@ function renderAllCharts() {
                     grid: { display: false }
                 },
                 y: {
-                    min: 60,
-                    max: 95,
+                    min: 0,
+                    max: 100,
                     ticks: { callback: v => v + '%' },
                     title: { display: true, text: '% Good / Very Good' }
                 }
@@ -861,7 +865,7 @@ function renderAllCharts() {
             },
             scales: {
                 x: { type: 'linear', min: 2007, max: 2025, ticks: { stepSize: 2, callback: v => Number.isInteger(v) ? v : '' }, grid: { display: false } },
-                y: { min: 40, max: 95, ticks: { callback: v => v + '%' } }
+                y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
             }
         }
     });
@@ -897,7 +901,7 @@ function renderAllCharts() {
             },
             scales: {
                 x: { type: 'linear', min: 2012, max: 2025, ticks: { stepSize: 2, callback: v => Number.isInteger(v) ? v : '' }, grid: { display: false } },
-                y: { min: 45, max: 85, ticks: { callback: v => v + '%' } }
+                y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
             }
         }
     });
@@ -1038,7 +1042,7 @@ function renderAllCharts() {
             },
             scales: {
                 x: { grid: { display: false } },
-                y: { min: 70, max: 95, ticks: { callback: v => v + '%' } }
+                y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
             }
         }
     });
@@ -1106,8 +1110,8 @@ function renderAllCharts() {
                         note: {
                             type: 'label',
                             xValue: 1,
-                            yValue: 40,
-                            content: ['No statistically significant', 'associations found (p>0.05)'],
+                            yValue: 38,
+                            content: ['No statistically significant', 'associations found (p > 0.05)'],
                             backgroundColor: 'rgba(220,38,38,0.1)',
                             color: COLORS.red,
                             font: { size: 11, weight: 'bold' },
@@ -1118,7 +1122,7 @@ function renderAllCharts() {
                 }
             },
             scales: {
-                x: { grid: { display: false } },
+                x: { grid: { display: false }, ticks: { maxRotation: 0 } },
                 y: { min: 30, max: 100, ticks: { callback: v => v + '%' } }
             }
         }
@@ -1166,8 +1170,8 @@ function renderAllCharts() {
                     annotations: {
                         gap: {
                             type: 'label',
-                            xValue: 2, yValue: 1.85,
-                            content: ['Gap: 0.62 points', 'r = 0.30, p < 10⁻¹²⁹', `n = 6,250 practices`],
+                            xValue: 1, yValue: 2.0,
+                            content: ['Gap: 0.62 points', 'r = 0.30, p < 10⁻¹²⁹', 'n = 6,250 practices'],
                             backgroundColor: 'rgba(220,38,38,0.1)',
                             color: COLORS.red,
                             font: { size: 11, weight: 'bold' },
@@ -1179,7 +1183,7 @@ function renderAllCharts() {
             },
             scales: {
                 x: { grid: { display: false } },
-                y: { min: 0.8, max: 2.0, title: { display: true, text: 'Mean Score (lower = better)' } }
+                y: { min: 0.8, max: 2.3, title: { display: true, text: 'Mean Score (lower = better)' } }
             }
         }
     });
@@ -1215,7 +1219,7 @@ function renderAllCharts() {
     new Chart(document.getElementById('chart-deprivation-characteristics'), {
         type: 'bar',
         data: {
-            labels: realDeprivation.quintiles,
+            labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5'],
             datasets: [
                 { label: '% Face-to-Face', data: realDeprivation.meanF2F, backgroundColor: COLORS.blue + 'CC', borderRadius: 3, yAxisID: 'y1' },
                 { label: '% Telephone', data: realDeprivation.meanTelephone, backgroundColor: COLORS.amber + 'CC', borderRadius: 3, yAxisID: 'y1' },
@@ -1229,7 +1233,7 @@ function renderAllCharts() {
                 tooltip: { callbacks: { label: ctx => ctx.dataset.yAxisID === 'y2' ? `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)}` : `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%` } }
             },
             scales: {
-                x: { grid: { display: false } },
+                x: { grid: { display: false }, ticks: { maxRotation: 0 }, title: { display: true, text: 'IMD Quintile  (Q1 = least deprived → Q5 = most deprived)', font: { size: 11 } } },
                 y1: { position: 'left', min: 20, max: 80, ticks: { callback: v => v + '%' }, title: { display: true, text: '% of Appointments' } },
                 y2: { position: 'right', min: 0.35, max: 0.55, grid: { display: false }, title: { display: true, text: 'GP FTE per 1,000 pts', color: COLORS.green } }
             }
