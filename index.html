@@ -708,7 +708,8 @@ function makeAnnotations(xMin, xMax) {
                 label: {
                     display: true,
                     content: p.label,
-                    position: 'start',
+                    position: 'end',
+                    yAdjust: -4,
                     backgroundColor: p.color,
                     color: '#fff',
                     font: { size: 9, weight: 'bold' },
@@ -727,7 +728,8 @@ function makeAnnotations(xMin, xMax) {
         label: {
             display: true,
             content: '2018 Break',
-            position: { x: 'center', y: 'start' },
+            position: { x: 'center', y: 'end' },
+            yAdjust: -4,
             font: { size: 9 },
             color: '#9ca3af'
         }
@@ -742,7 +744,8 @@ function makeAnnotations(xMin, xMax) {
             label: {
                 display: true,
                 content: '2024 Break',
-                position: { x: 'center', y: 'start' },
+                position: { x: 'center', y: 'end' },
+                yAdjust: -4,
                 font: { size: 9 },
                 color: '#9ca3af'
             }
@@ -812,9 +815,9 @@ function renderAllCharts() {
             scales: {
                 x: {
                     type: 'linear',
-                    min: 2006.5,
-                    max: 2025.5,
-                    ticks: { stepSize: 1, callback: v => v },
+                    min: 2007,
+                    max: 2025,
+                    ticks: { stepSize: 1, callback: v => Number.isInteger(v) ? v : '' },
                     grid: { display: false }
                 },
                 y: {
@@ -857,7 +860,7 @@ function renderAllCharts() {
                 tooltip: { callbacks: { label: ctx => `${ctx.parsed.y}%` } }
             },
             scales: {
-                x: { type: 'linear', min: 2006.5, max: 2025.5, ticks: { stepSize: 2, callback: v => v }, grid: { display: false } },
+                x: { type: 'linear', min: 2007, max: 2025, ticks: { stepSize: 2, callback: v => Number.isInteger(v) ? v : '' }, grid: { display: false } },
                 y: { min: 40, max: 95, ticks: { callback: v => v + '%' } }
             }
         }
@@ -893,7 +896,7 @@ function renderAllCharts() {
                 tooltip: { callbacks: { label: ctx => `${ctx.parsed.y}%` } }
             },
             scales: {
-                x: { type: 'linear', min: 2011.5, max: 2025.5, ticks: { stepSize: 2, callback: v => v }, grid: { display: false } },
+                x: { type: 'linear', min: 2012, max: 2025, ticks: { stepSize: 2, callback: v => Number.isInteger(v) ? v : '' }, grid: { display: false } },
                 y: { min: 45, max: 85, ticks: { callback: v => v + '%' } }
             }
         }
