@@ -182,6 +182,25 @@
             .tab-section { display: block !important; page-break-before: always; }
             .chart-container { break-inside: avoid; }
         }
+
+        /* Reference links */
+        .narrative-box a, .methods-box a, .chart-note a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--accent-blue);
+        }
+        .narrative-box a:hover, .methods-box a:hover, .chart-note a:hover {
+            border-bottom-style: solid;
+        }
+        .source a, footer a {
+            color: var(--text-secondary);
+            border-bottom: 1px dotted var(--text-secondary);
+            text-decoration: none;
+        }
+        .source a:hover, footer a:hover {
+            color: var(--accent-blue);
+            border-bottom: 1px solid var(--accent-blue);
+        }
     </style>
 </head>
 <body>
@@ -300,16 +319,16 @@
 
         <div class="chart-container">
             <h3>Pre-Challenge Fund Satisfaction Levels (2007–2013)</h3>
-            <div class="chart-note">When the PM's Challenge Fund launched in 2013, overall GP experience was at 87–88% — well above typical public service satisfaction benchmarks. The Challenge Fund's own evaluation (NHS England/Ipsos MORI, 2015) surveyed patients within pilot sites and found 90% rated appointment convenience positively — but this was not a baseline measure: there was no pre-intervention comparison and no control group.</div>
+            <div class="chart-note">When the PM's Challenge Fund launched in 2013, overall GP experience was at 87–88% — well above typical public service satisfaction benchmarks. The Challenge Fund's own evaluation (<a href="https://www.england.nhs.uk/publication/prime-ministers-challenge-fund-improving-access-to-general-practice/" target="_blank" rel="noopener noreferrer">NHS England/Ipsos MORI, 2015</a>) surveyed patients within pilot sites and found 90% rated appointment convenience positively — but this was not a baseline measure: there was no pre-intervention comparison and no control group.</div>
             <canvas id="chart-pre-crisis"></canvas>
         </div>
 
         <div class="narrative-box">
             <h3>Finding: No evidence of an access crisis in the patient survey data</h3>
             <p>Between 2007 and 2013, overall GP experience satisfaction ranged from <span class="highlight">~87% to ~90%</span>. Phone access satisfaction was around 81–87%. The proportion of patients able to see a preferred GP was approximately 88% in the earliest surveys.</p>
-            <p>These are exceptionally high satisfaction levels by any public service standard. The PM's Challenge Fund (2013) was launched into a system where roughly 9 in 10 patients reported good experience. The Challenge Fund's own evaluation (NHS England/Ipsos MORI, 2015) found <span class="highlight">90% of patients</span> in participating practices rated appointment convenience positively — but this was measured only within the pilots, with no pre-intervention baseline and no control group, making it impossible to attribute to the intervention itself.</p>
+            <p>These are exceptionally high satisfaction levels by any public service standard. The PM's Challenge Fund (2013) was launched into a system where roughly 9 in 10 patients reported good experience. The Challenge Fund's own evaluation (<a href="https://www.england.nhs.uk/publication/prime-ministers-challenge-fund-improving-access-to-general-practice/" target="_blank" rel="noopener noreferrer">NHS England/Ipsos MORI, 2015</a>) found <span class="highlight">90% of patients</span> in participating practices rated appointment convenience positively — but this was measured only within the pilots, with no pre-intervention baseline and no control group, making it impossible to attribute to the intervention itself.</p>
             <p>The political narrative of an "access crisis" was not supported by the patient survey data available at the time. Access satisfaction was high and had been stable for years. The decline that did subsequently occur (from ~88% in 2012 to 71% in 2023) happened <em>during and after</em> the intervention period, not before it.</p>
-            <p class="source">Sources: GPPS national results 2007–2013; PM's Challenge Fund Wave 1 Evaluation (NHS England/Ipsos MORI, 2015)</p>
+            <p class="source">Sources: <a href="https://www.gp-patient.co.uk/" target="_blank" rel="noopener noreferrer">GPPS national results 2007–2013</a>; <a href="https://www.england.nhs.uk/publication/prime-ministers-challenge-fund-improving-access-to-general-practice/" target="_blank" rel="noopener noreferrer">PM's Challenge Fund Wave 1 Evaluation (NHS England/Ipsos MORI, 2015)</a></p>
         </div>
     </div>
 
@@ -326,7 +345,7 @@
         <div class="chart-row-2col">
             <div class="chart-container">
                 <h3>Extended Access: No Impact on Patient Experience</h3>
-                <div class="chart-note">BJGP Open 2022 study: the national extended access scheme (costing ~£250m/year) found no statistically significant association between extended access provision and any patient satisfaction measure.</div>
+                <div class="chart-note"><a href="https://bjgpopen.org/content/6/2/bjgpo.2022.0013" target="_blank" rel="noopener noreferrer">BJGP Open 2022 study</a>: the national extended access scheme (costing ~£250m/year) found no statistically significant association between extended access provision and any patient satisfaction measure.</div>
                 <canvas id="chart-extended-access"></canvas>
             </div>
             <div class="chart-container">
@@ -339,9 +358,9 @@
         <div class="narrative-box">
             <h3>Finding: No measurable positive impact from the access interventions</h3>
             <p>Every access-related GPPS measure declined between 2012 and 2023. Overall experience fell from 88.4% to 71.3%. Phone access satisfaction fell from 81% to 50% (2023), recovering only slightly to 53% by 2025. Appointment experience dropped from 76% to 54%.</p>
-            <p>The 2022 BJGP Open study specifically tested whether the extended access scheme — costing approximately £250 million annually — had improved patient experience. It found <span class="highlight">no statistically significant associations</span> between extended access provision and satisfaction with appointment times, ability to see a preferred GP, or overall experience.</p>
+            <p>The <a href="https://bjgpopen.org/content/6/2/bjgpo.2022.0013" target="_blank" rel="noopener noreferrer">2022 BJGP Open study</a> specifically tested whether the extended access scheme — costing approximately £250 million annually — had improved patient experience. It found <span class="highlight">no statistically significant associations</span> between extended access provision and satisfaction with appointment times, ability to see a preferred GP, or overall experience.</p>
             <p>Meanwhile, the GP workforce declined by 2,014 FTE (7%) between 2015 and 2023. The workforce nadir coincides precisely with the satisfaction nadir. Since 2023, partial workforce recovery (to 28,703 FTE by September 2025) has coincided with modest satisfaction improvements — though the 2024 methodology break complicates this comparison.</p>
-            <p class="source">Sources: GPPS national results 2012–2025; BJGP Open 2022 (PMC9447322); NHS England workforce statistics</p>
+            <p class="source">Sources: <a href="https://www.gp-patient.co.uk/" target="_blank" rel="noopener noreferrer">GPPS national results 2012–2025</a>; <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9447322/" target="_blank" rel="noopener noreferrer">BJGP Open 2022 (PMC9447322)</a>; <a href="https://digital.nhs.uk/data-and-information/publications/statistical/general-and-personal-medical-services" target="_blank" rel="noopener noreferrer">NHS England workforce statistics</a></p>
         </div>
     </div>
 
@@ -373,7 +392,7 @@
             <p>Linking 6,250 practices to IMD 2019 scores reveals that deprivation is the <span class="highlight">overwhelmingly dominant predictor</span> of patient experience. The correlation (r=0.30, p&lt;10⁻¹²⁹) is an order of magnitude stronger than any consultation mode or workforce variable.</p>
             <p>The most deprived quintile has a mean experience score of <span class="highlight">1.76</span> compared to 1.14 for the least deprived (lower = better). This 0.62 point gap dwarfs any effect of F2F rates, telephone rates, or GP workforce levels.</p>
             <p>Critically, <span class="highlight">F2F rates are almost identical across deprivation quintiles</span> (68–71%), so the deprivation effect is NOT explained by consultation mode differences. The F2F × deprivation interaction is not significant (p=0.35). The access interventions — focused on mode of consultation — never addressed what actually matters most.</p>
-            <p class="source">Sources: Practice-level linkage of Fingertips GPPS indicator 90646 (2022/23), NHS Digital Appointments in General Practice (Jan–Mar 2023), GP Workforce wMDS (Mar 2023), IMD 2019. n=6,250 practices.</p>
+            <p class="source">Sources: Practice-level linkage of <a href="https://fingertips.phe.org.uk/profile/general-practice" target="_blank" rel="noopener noreferrer">Fingertips GPPS indicator 90646</a> (2022/23), <a href="https://digital.nhs.uk/data-and-information/publications/statistical/appointments-in-general-practice" target="_blank" rel="noopener noreferrer">NHS Digital Appointments in General Practice</a> (Jan–Mar 2023), <a href="https://digital.nhs.uk/data-and-information/publications/statistical/general-and-personal-medical-services" target="_blank" rel="noopener noreferrer">GP Workforce wMDS</a> (Mar 2023), <a href="https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019" target="_blank" rel="noopener noreferrer">IMD 2019</a>. n=6,250 practices.</p>
         </div>
     </div>
 
@@ -397,7 +416,7 @@
         <div class="chart-row-2col">
             <div class="chart-container">
                 <h3>F2F Rate vs Experience — Real Practice-Level Scatter (n=6,250)</h3>
-                <div class="chart-note">Each dot = one practice (300 sample). Y-axis: experience score (lower = better). Our replication finds r=-0.016 (p=0.20, NS) for all F2F, and r=-0.032 (p=0.01) for GP-specific F2F. The effect is real but tiny. Manchester (BJGP 2025) reported r=0.167 using % satisfied rather than mean score.</div>
+                <div class="chart-note">Each dot = one practice (300 sample). Y-axis: experience score (lower = better). Our replication finds r=-0.016 (p=0.20, NS) for all F2F, and r=-0.032 (p=0.01) for GP-specific F2F. The effect is real but tiny. <a href="https://bjgp.org/content/75/754/e375" target="_blank" rel="noopener noreferrer">Manchester (BJGP 2025)</a> reported r=0.167 using % satisfied rather than mean score.</div>
                 <canvas id="chart-f2f-correlation"></canvas>
             </div>
             <div class="chart-container">
@@ -415,10 +434,10 @@
 
         <div class="narrative-box">
             <h3>Finding: Mode of consultation barely matters — deprivation and workforce explain the trends</h3>
-            <p>Our practice-level replication using the same public datasets as the Manchester study finds a <span class="highlight">much weaker association</span> between F2F rates and experience than reported in BJGP 2025. The bivariate correlation for all F2F is r=-0.016 (p=0.20, not significant); for GP-specific F2F it is r=-0.032 (p=0.01). Controlling for deprivation and workforce, the F2F effect becomes non-significant (p=0.52).</p>
+            <p>Our practice-level replication using the same public datasets as the <a href="https://bjgp.org/content/75/754/e375" target="_blank" rel="noopener noreferrer">Manchester study</a> finds a <span class="highlight">much weaker association</span> between F2F rates and experience than reported in <a href="https://bjgp.org/content/75/754/e375" target="_blank" rel="noopener noreferrer">BJGP 2025</a>. The bivariate correlation for all F2F is r=-0.016 (p=0.20, not significant); for GP-specific F2F it is r=-0.032 (p=0.01). Controlling for deprivation and workforce, the F2F effect becomes non-significant (p=0.52).</p>
             <p>Telephone appointment rates show a statistically significant but small association with worse experience (r=0.06, p&lt;0.001). The 2024/25 GPPS confirms that NHS App users reported the lowest ease of contact (44.8%), compared to phone (49.7%) and in-person (68%).</p>
             <p>Crucially, <span class="highlight">GP workforce density shows zero cross-sectional association</span> with experience (r=0.001, p=0.93). The temporal correlation between falling national FTE GPs and falling satisfaction is striking, but at practice level in any single year, having more GPs doesn't predict better experience. This suggests the temporal relationship may reflect system-level effects (longer waits everywhere when workforce is stretched) rather than practice-level capacity.</p>
-            <p class="source">Sources: University of Manchester/BJGP 2025; GPPS 2024–25; NHS Digital appointments data</p>
+            <p class="source">Sources: <a href="https://bjgp.org/content/75/754/e375" target="_blank" rel="noopener noreferrer">University of Manchester/BJGP 2025</a>; <a href="https://www.gp-patient.co.uk/" target="_blank" rel="noopener noreferrer">GPPS 2024–25</a>; <a href="https://digital.nhs.uk/data-and-information/publications/statistical/appointments-in-general-practice" target="_blank" rel="noopener noreferrer">NHS Digital appointments data</a></p>
         </div>
     </div>
 
@@ -429,13 +448,13 @@
         <div class="narrative-box">
             <h2>The Access Paradox: How Billions Spent on GP Access Made Things Worse</h2>
 
-            <p>Between 2013 and 2025, successive English governments invested hundreds of millions of pounds in reshaping how patients access general practice. The PM's Challenge Fund (£150m, 2013–15), the GP Forward View online consultation fund (£45m, 2017–20), the pandemic total triage mandate (2020), and the ongoing digital pathways programme (£48m+) were all justified by a narrative of declining access. This analysis of the GP Patient Survey (GPPS) from 2007 to 2025 tests whether that narrative was supported by the evidence — and whether the interventions delivered what they promised.</p>
+            <p>Between 2013 and 2025, successive English governments invested hundreds of millions of pounds in reshaping how patients access general practice. The <a href="https://www.england.nhs.uk/publication/prime-ministers-challenge-fund-improving-access-to-general-practice/" target="_blank" rel="noopener noreferrer">PM's Challenge Fund</a> (£150m, 2013–15), the <a href="https://www.england.nhs.uk/gp/gpfv/" target="_blank" rel="noopener noreferrer">GP Forward View</a> online consultation fund (£45m, 2017–20), the pandemic total triage mandate (2020), and the ongoing digital pathways programme (£48m+) were all justified by a narrative of declining access. This analysis of the <a href="https://www.gp-patient.co.uk/" target="_blank" rel="noopener noreferrer">GP Patient Survey (GPPS)</a> from 2007 to 2025 tests whether that narrative was supported by the evidence — and whether the interventions delivered what they promised.</p>
 
             <h3>There was no access crisis</h3>
-            <p>When the PM's Challenge Fund launched in 2013, overall GP experience satisfaction stood at around 87–88%. Phone access satisfaction was above 80%. By any public service benchmark, these were high levels of satisfaction. The Challenge Fund's own evaluation (NHS England/Ipsos MORI, 2015) reported 90% satisfaction with appointment convenience — but this was measured only within pilot sites, with no baseline comparison and no control group, so it tells us patients liked getting extra appointments, not that the intervention improved access. The political narrative of an access crisis was not an epidemiological finding — it was a policy choice looking for a justification.</p>
+            <p>When the PM's Challenge Fund launched in 2013, overall GP experience satisfaction stood at around 87–88%. Phone access satisfaction was above 80%. By any public service benchmark, these were high levels of satisfaction. The Challenge Fund's own evaluation (<a href="https://www.england.nhs.uk/publication/prime-ministers-challenge-fund-improving-access-to-general-practice/" target="_blank" rel="noopener noreferrer">NHS England/Ipsos MORI, 2015</a>) reported 90% satisfaction with appointment convenience — but this was measured only within pilot sites, with no baseline comparison and no control group, so it tells us patients liked getting extra appointments, not that the intervention improved access. The political narrative of an access crisis was not an epidemiological finding — it was a policy choice looking for a justification.</p>
 
             <h3>The interventions did not improve access satisfaction</h3>
-            <p>Every access-related GPPS measure declined between 2012 and 2023. Overall experience fell approximately 17 percentage points from ~88% to 71.3%. Phone access satisfaction fell from 81% to 50% (2023), recovering only slightly to 53% by 2025. The specific experience of making an appointment dropped from 76% to 54%. The 2022 BJGP Open study found that the extended access scheme — costing approximately £250 million annually — had no statistically significant impact on any patient satisfaction measure.</p>
+            <p>Every access-related GPPS measure declined between 2012 and 2023. Overall experience fell approximately 17 percentage points from ~88% to 71.3%. Phone access satisfaction fell from 81% to 50% (2023), recovering only slightly to 53% by 2025. The specific experience of making an appointment dropped from 76% to 54%. The <a href="https://bjgpopen.org/content/6/2/bjgpo.2022.0013" target="_blank" rel="noopener noreferrer">2022 BJGP Open study</a> found that the extended access scheme — costing approximately £250 million annually — had no statistically significant impact on any patient satisfaction measure.</p>
 
             <h3>Workforce decline explains the trajectory better than the interventions</h3>
             <p>The GP workforce shrank by 2,014 FTE (7%) between 2015 and 2023. This decline tracks the satisfaction decline far more closely than any policy intervention marker. The workforce nadir in 2023 coincides with the satisfaction nadir. The partial workforce recovery since 2023 (to 28,703 FTE by September 2025, roughly back to 2015 levels) has coincided with modest satisfaction improvements. The simplest explanation for declining access satisfaction is that there were fewer GPs to see — not that the system lacked digital triage tools.</p>
@@ -444,7 +463,7 @@
             <p>Our practice-level analysis linking 6,250 practices to IMD 2019 deprivation scores reveals that deprivation is the overwhelmingly dominant predictor of patient experience (r=0.30, p&lt;10⁻¹²⁹). The gap between the most and least deprived quintiles (mean score 1.76 vs 1.14) dwarfs any effect of consultation mode or workforce. Critically, face-to-face rates are almost identical across deprivation quintiles (68–71%), so the deprivation effect is not mediated by mode of consultation. The access interventions — which focused on how patients contact their practice — never addressed the structural relationship between deprivation and healthcare experience.</p>
 
             <h3>Mode of consultation barely matters once deprivation is controlled</h3>
-            <p>Our replication of the Manchester BJGP 2025 study using the same public datasets finds a much weaker F2F/satisfaction association (r=-0.016, p=0.20) than reported in the original paper (r=0.167). Controlling for deprivation and workforce, the F2F effect becomes non-significant. The telephone association is small but significant (r=0.06, p&lt;0.001). GP workforce density shows zero cross-sectional association with experience (r=0.001, p=0.93), though the temporal trend is still striking. Waiting time distributions have remained essentially static (42–44% same-day) throughout the intervention period.</p>
+            <p>Our replication of the <a href="https://bjgp.org/content/75/754/e375" target="_blank" rel="noopener noreferrer">Manchester BJGP 2025 study</a> using the same public datasets finds a much weaker F2F/satisfaction association (r=-0.016, p=0.20) than reported in the original paper (r=0.167). Controlling for deprivation and workforce, the F2F effect becomes non-significant. The telephone association is small but significant (r=0.06, p&lt;0.001). GP workforce density shows zero cross-sectional association with experience (r=0.001, p=0.93), though the temporal trend is still striking. Waiting time distributions have remained essentially static (42–44% same-day) throughout the intervention period.</p>
 
             <h3>Caveats and limitations</h3>
             <p>This analysis faces three significant methodological challenges. First, the 2018 GPPS questionnaire redesign means pre- and post-2018 data are not directly comparable, and a further break in 2024 complicates the most recent trends. Second, the GPPS has a ~30% response rate skewing older, meaning digitally literate younger patients may be underrepresented — potentially biasing against finding positive digital effects. Third, practice-level ecological analysis cannot establish individual-level causation. However, the direction and magnitude of the trends are so consistent across multiple measures, time periods, and analytical approaches that the core finding is robust: the access interventions did not deliver measurable improvement in patient-reported experience, and may have contributed to decline.</p>
@@ -460,14 +479,14 @@
 
         <div class="methods-box">
             <h3>Data Sources</h3>
-            <p><strong>GP Patient Survey (GPPS):</strong> National-level published results from gp-patient.co.uk and NHS England Statistics for time series (Phases 1–3). Practice-level data for Phases 4–5 downloaded via the Fingertips API (indicator 90646: overall experience of GP surgery, area type 7: GP practices). 2022/23 wave: 6,378 practices with valid scores.</p>
-            <p><strong>GP Workforce:</strong> NHS England Digital workforce minimum dataset (wMDS). National FTE series from September 2015 (Phase 1). Practice-level detailed CSV for March 2023 used in the regression analysis (6,407 practices). Variables: TOTAL_GP_EXTG_FTE (excluding GP trainees and locums), TOTAL_PATIENTS.</p>
-            <p><strong>Appointment Data:</strong> NHS Digital Appointments in General Practice. National time series from October 2018 (Phase 1). Practice-level crosstab CSVs for January–March 2023 downloaded from NHS Digital (Phase 5). Variables aggregated: mode (Face-to-Face, Telephone, Video/Online), HCP type (GP vs other), waiting time category. Attended appointments only.</p>
-            <p><strong>Deprivation:</strong> IMD 2019 deprivation score at practice level via Fingertips (indicator 93553, area type 7). 6,980 practices with IMD scores. Linked to GPPS and appointments data by practice code.</p>
+            <p><strong>GP Patient Survey (GPPS):</strong> National-level published results from <a href="https://www.gp-patient.co.uk/" target="_blank" rel="noopener noreferrer">gp-patient.co.uk</a> and <a href="https://www.england.nhs.uk/statistics/" target="_blank" rel="noopener noreferrer">NHS England Statistics</a> for time series (Phases 1–3). Practice-level data for Phases 4–5 downloaded via the <a href="https://fingertips.phe.org.uk/profile/general-practice" target="_blank" rel="noopener noreferrer">Fingertips API</a> (indicator 90646: overall experience of GP surgery, area type 7: GP practices). 2022/23 wave: 6,378 practices with valid scores.</p>
+            <p><strong>GP Workforce:</strong> <a href="https://digital.nhs.uk/data-and-information/publications/statistical/general-and-personal-medical-services" target="_blank" rel="noopener noreferrer">NHS England Digital workforce minimum dataset (wMDS)</a>. National FTE series from September 2015 (Phase 1). Practice-level detailed CSV for March 2023 used in the regression analysis (6,407 practices). Variables: TOTAL_GP_EXTG_FTE (excluding GP trainees and locums), TOTAL_PATIENTS.</p>
+            <p><strong>Appointment Data:</strong> <a href="https://digital.nhs.uk/data-and-information/publications/statistical/appointments-in-general-practice" target="_blank" rel="noopener noreferrer">NHS Digital Appointments in General Practice</a>. National time series from October 2018 (Phase 1). Practice-level crosstab CSVs for January–March 2023 downloaded from NHS Digital (Phase 5). Variables aggregated: mode (Face-to-Face, Telephone, Video/Online), HCP type (GP vs other), waiting time category. Attended appointments only.</p>
+            <p><strong>Deprivation:</strong> <a href="https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019" target="_blank" rel="noopener noreferrer">IMD 2019</a> deprivation score at practice level via <a href="https://fingertips.phe.org.uk/profile/general-practice" target="_blank" rel="noopener noreferrer">Fingertips</a> (indicator 93553, area type 7). 6,980 practices with IMD scores. Linked to GPPS and appointments data by practice code.</p>
             <p><strong>Linked dataset:</strong> 6,250 practices after merging all four sources and filtering (GPPS denominator &gt;500, total appointments &gt;100, valid values for all key variables).</p>
             <p><strong>Statistical methods:</strong> OLS regression weighted by practice list size equivalent (GPPS denominator). Pearson correlations reported for bivariate associations. All analysis conducted in Python (pandas, scipy, statsmodels).</p>
-            <p><strong>Extended Access Evaluation:</strong> BJGP Open 2022 (PMC9447322) — ecological study of extended access provision and GPPS satisfaction.</p>
-            <p><strong>Mode-Satisfaction Comparison:</strong> University of Manchester / BJGP 2025 — practice-level analysis replicated here using the same public datasets.</p>
+            <p><strong>Extended Access Evaluation:</strong> <a href="https://bjgpopen.org/content/6/2/bjgpo.2022.0013" target="_blank" rel="noopener noreferrer">BJGP Open 2022 (PMC9447322)</a> — ecological study of extended access provision and GPPS satisfaction.</p>
+            <p><strong>Mode-Satisfaction Comparison:</strong> <a href="https://bjgp.org/content/75/754/e375" target="_blank" rel="noopener noreferrer">University of Manchester / BJGP 2025</a> — practice-level analysis replicated here using the same public datasets.</p>
         </div>
 
         <div class="methods-box">
@@ -483,12 +502,12 @@
             <p><strong>Response bias:</strong> GPPS response rate is approximately 25–35%, skewing older and less deprived. This may underrepresent younger, digitally literate patients (biasing against digital tools) and also underrepresent the most digitally excluded (biasing against finding harm).</p>
             <p><strong>Ecological fallacy:</strong> Practice-level analysis cannot establish individual-level causation. The deprivation and mode analyses are ecological and should be interpreted accordingly.</p>
             <p><strong>Confounding:</strong> Multiple factors changed simultaneously (workforce, demand, policy, pandemic, public expectations). Isolating the effect of any single intervention is not possible from observational survey data alone.</p>
-            <p><strong>Data gaps:</strong> Early GPPS data (2007–2010) is less well-documented in publicly available secondary analyses. Some figures for this period are estimated from published summaries rather than extracted from raw data files. The 2012 baseline figure may range from 87.6% to 88.4% depending on which wave and aggregation method is used; we use ~88% throughout. Deprivation quintile figures for 2021 are from Nuffield Trust secondary analysis of GPPS; the 2024 quintile estimates are interpolated from the published most/least deprived figures and should be treated as approximate.</p>
+            <p><strong>Data gaps:</strong> Early GPPS data (2007–2010) is less well-documented in publicly available secondary analyses. Some figures for this period are estimated from published summaries rather than extracted from raw data files. The 2012 baseline figure may range from 87.6% to 88.4% depending on which wave and aggregation method is used; we use ~88% throughout. Deprivation quintile figures for 2021 are from <a href="https://www.nuffieldtrust.org.uk/" target="_blank" rel="noopener noreferrer">Nuffield Trust</a> secondary analysis of GPPS; the 2024 quintile estimates are interpolated from the published most/least deprived figures and should be treated as approximate.</p>
         </div>
     </div>
 
     <footer>
-        Data compiled from GP Patient Survey (gp-patient.co.uk), NHS England Statistics, NHS Digital, Nuffield Trust, Health Equity Evidence Centre, BJGP Open, and University of Manchester/BJGP.
+        Data compiled from <a href="https://www.gp-patient.co.uk/" target="_blank" rel="noopener noreferrer">GP Patient Survey (gp-patient.co.uk)</a>, <a href="https://www.england.nhs.uk/statistics/" target="_blank" rel="noopener noreferrer">NHS England Statistics</a>, <a href="https://digital.nhs.uk/" target="_blank" rel="noopener noreferrer">NHS Digital</a>, <a href="https://www.nuffieldtrust.org.uk/" target="_blank" rel="noopener noreferrer">Nuffield Trust</a>, Health Equity Evidence Centre, <a href="https://bjgpopen.org/" target="_blank" rel="noopener noreferrer">BJGP Open</a>, and <a href="https://bjgp.org/content/75/754/e375" target="_blank" rel="noopener noreferrer">University of Manchester/BJGP</a>.
         <br>Analysis produced April 2026. All data is publicly available and does not require ethics approval for secondary analysis.
     </footer>
 </div>
